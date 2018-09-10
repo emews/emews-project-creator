@@ -5,9 +5,11 @@ import jinja2
 
 class Template:
 
-    def __init__(self, name, root_path, env):
+    def __init__(self, name, description, root_path, env):
         self.name = name
         self.root_path = root_path
+        self.description = description
+
         self.dirs = []
         self.files = []
         for root, dirs, files in os.walk(root_path):
@@ -15,7 +17,8 @@ class Template:
             for d in dirs:
                 self.dirs.append(os.path.join(relative_root, d))
             for f in files:
-                self.files.append(os.path.join(relative_root, f))
+                if f != ".retain":
+                    self.files.append(os.path.join(relative_root, f))
         
         self.env = env
         
@@ -28,8 +31,9 @@ class Template:
             template_string = template.render(ctx)
         return template_string
 
-    def generate(self, output_path, ctx):
+    def generate(self, ctx):
         # template the directories
+        output_path = ctx['project']['path']
         for d in self.dirs:
             new_dir = os.path.join(output_path, d)
             new_dir = self.apply_template(new_dir, ctx)

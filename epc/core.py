@@ -30,17 +30,57 @@ def load_context(template_path, fname='template.json'):
 
     return ctx
 
+def basename(path):
+    return os.path.basename(path)
+
+def dirname(path):
+    return os.path.dirname(path)
 
 def find_templates(ctx):
-    templates = []
+    templates = {}
     name_suffix = '_template'
+
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(ctx['__template_root__']))
+    env.filters['basename'] = basename
+    env.filters['dirname']  = dirname
+
     for k in ctx:
         if k.endswith(name_suffix):
-            t_path = os.path.join(ctx['__template_root__'], ctx[k]['location'])
+            t_dict = ctx[k]
+            t_path = os.path.join(ctx['__template_root__'], t_dict['location'])
             t_name = k[:-len(name_suffix)]
-            t = template.Template(t_name, t_path, env)
-            templates.append(t)
+            description = ''
+            if 'description'in t_dict:
+                description = t_dict['description']
+            t = template.Template(t_name, description, t_path, env)
+            templates[t_name] = t
+
     return templates
+
+
+def list_templates(template_path):
+    ctx = load_context(template_path)
+    templates = find_templates(ctx)
+    for name, template in templates.items():
+        print(name)
+        print("Description: {}".format(template.description))
+
+def run_template(template_path, name, project_path):
+    ctx = load_context(template_path)
+    templates = find_templates(ctx)
+    if name in templates:
+        template = templates[name]
+        template_ctx = ctx['{}_template'.format(name)]
+        project_path = os.path.abspath(project_path)
+        template_ctx['project'] = {'path' : project_path}
+        print("Generating {}".format(name))
+        template.generate(template_ctx)
+        if os.path.exists(os.path.join(project_path, 'README.md')):
+            print("show readme")
+    else:
+        print("Template {} not found".format(name))
+
+
+
             
 
