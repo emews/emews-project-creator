@@ -1,0 +1,11 @@
+{   "t1_template": {
+    
+        "location" : "t1/",
+
+        "project" : {
+            "name" : "my_project"
+        },
+
+        "subtemplates" : []
+    }    
+}
