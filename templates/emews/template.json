@@ -1,8 +1,0 @@
-{   "emews_template": {
-    
-        "location" : "base/",
-        "description" : "Creates the canonical emews directory structure",
-
-        "subtemplates" : []
-    }    
-}
