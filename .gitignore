@@ -2,3 +2,5 @@
 
 scratch/
 __pycache__
+obsolete
+.vscode

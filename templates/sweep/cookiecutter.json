@@ -1,7 +1,9 @@
 {
     "emews_root_directory" : "swift_proj",
-    "sweep_wf_file" : "sweep_workflow",
-    "sweep_cfg_file" : "sweep",
+    "model_script_name" : "run_model",
+
+    "wf_file_name" : "sweep_workflow",
+    "cfg_file_name" : "sweep",
     "cfg_walltime" : "01:00:00",
     "cfg_queue" : "queue",
     "cfg_project" : "project",

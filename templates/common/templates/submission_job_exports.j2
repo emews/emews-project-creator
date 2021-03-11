@@ -1,0 +1,23 @@
+export PROCS=$CFG_PROCS
+export QUEUE=$CFG_QUEUE
+export PROJECT=$CFG_PROJECT
+export WALLTIME=$CFG_WALLTIME
+export PPN=$CFG_PPN
+export TURBINE_JOBNAME="${EXPID}_job"
+
+# EQ/Py location
+# EQPY=$EMEWS_PROJECT_ROOT/ext/EQ-Py
+
+# TODO: If R cannot be found, then these will need to be
+# uncommented and set correctly.
+# export R_HOME=/path/to/R
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$R_HOME/lib
+
+# TODO: If Python cannot be found or there are "Cannot find 
+# X package" type errors then these two environment variables
+# will need to be uncommented and set correctly.
+# export PYTHONHOME=/path/to/python
+# export PYTHONPATH=$EMEWS_PROJECT_ROOT/python
+
+mkdir -p $TURBINE_OUTPUT
+cp $CFG_FILE $TURBINE_OUTPUT/cfg.cfg
