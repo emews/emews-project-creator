@@ -14,6 +14,11 @@ def copytree(src, dst, symlinks=False, ignore=None):
             shutil.copy2(s, d)
 
 
+def copy_files(src_dir, dst_dir, files):
+    for f in files:
+        shutil.copy2(os.path.join(src_dir, f), dst_dir)
+
+
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
 

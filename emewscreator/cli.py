@@ -10,7 +10,8 @@ from emewscreator import __version__
 from . import generate
 
 # TODO make this such that external generates can be added
-generators = {'emews': generate.generate_emews, 'sweep': generate.generate_sweep}
+generators = {'emews': generate.generate_emews, 'sweep': generate.generate_sweep,
+              'eqpy': generate.generate_eqpy}
 
 
 class NotRequiredIfT(click.Option):

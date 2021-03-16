@@ -11,5 +11,12 @@ def remove_retain():
             print(f'Error while attempting to delete {f}')
 
 
+def rename_gitignore():
+    src = os.path.join(os.getcwd(), 'gitignore.txt')
+    dst = os.path.join(os.getcwd(), '.gitignore')
+    os.rename(src, dst)
+
+
 if __name__ == '__main__':
     remove_retain()
+    rename_gitignore()

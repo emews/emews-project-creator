@@ -2,6 +2,7 @@ import io;
 import sys;
 import files;
 import string;
+import emews;
 
 string emews_root = getenv("EMEWS_PROJECT_ROOT");
 string turbine_output = getenv("TURBINE_OUTPUT");

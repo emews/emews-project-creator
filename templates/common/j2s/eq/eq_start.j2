@@ -1,0 +1,10 @@
+(void o) start (int ME_rank) {
+    location me_loc = locationFromRank(ME_rank);
+    {{cookiecutter.eq_call_prefix}}_init_package(me_loc, "{{cookiecutter.me_module}}") =>
+    {{cookiecutter.eq_call_prefix}}_get(me_loc) =>
+    {{cookiecutter.eq_call_prefix}}_put(me_loc, me_config_file) =>
+      loop(me_loc) => {
+        {{cookiecutter.eq_call_prefix}}_stop(me_loc);
+        o = propagate();
+    }
+}

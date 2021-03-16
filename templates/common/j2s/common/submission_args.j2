@@ -20,10 +20,3 @@ fi
 USER_VARS=()
 # log variables and script to to TURBINE_OUTPUT directory
 log_script
-
-# echo's anything following this to standard out
-set -x
-SWIFT_FILE={{cookiecutter.wf_file_name}}.swift
-swift-t -n $PROCS $MACHINE -p \
-    $EMEWS_PROJECT_ROOT/swift/$SWIFT_FILE \
-    $CMD_LINE_ARGS
