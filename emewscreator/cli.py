@@ -11,7 +11,7 @@ from . import generate
 
 # TODO make this such that external generates can be added
 generators = {'emews': generate.generate_emews, 'sweep': generate.generate_sweep,
-              'eqpy': generate.generate_eqpy}
+              'eqpy': generate.generate_eqpy, 'eqr': generate.generate_eqr}
 
 
 class NotRequiredIfT(click.Option):

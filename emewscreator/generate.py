@@ -79,6 +79,14 @@ def config_for_all(config: Dict):
     config['model_launcher_name'] = f'run_{clean_model_name}'
 
 
+def config_for_eqpy(config: Dict):
+    pass
+
+
+def config_for_eqr(config: Dict):
+    pass
+
+
 def generate_sweep(output_dir, config_file):
     sweep_template = os.path.join(templates_dir, 'sweep')
     sweep_wd = copy_template_to_wd('sweep', sweep_template)
@@ -89,7 +97,7 @@ def generate_sweep(output_dir, config_file):
 
 def rename_gitignore(source_dir):
     src = os.path.join(source_dir, 'gitignore.txt')
-    dst = os.path.join(os.getcwd(), '.gitignore')
+    dst = os.path.join(source_dir, '.gitignore')
     os.rename(src, dst)
 
 
@@ -102,12 +110,32 @@ def copy_eqpy_code(eqpy_wd):
     return dst
 
 
+def copy_eqr_code(eqr_wd):
+    clone('https://github.com/emews/EQ-R.git', clone_to_dir=emews_wd, no_input=True)
+    src = os.path.join(emews_wd, 'EQ-R/src')
+    dst = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R')
+    # TODO Compile and copy the correct files
+    util.copy_files(src, dst, ['EQR.swift'])
+    shutil.rmtree(os.path.join(emews_wd, 'EQ-R'), ignore_errors=True)
+    return dst
+
+
 def generate_eqpy(output_dir, config_file):
     eqpy_template = os.path.join(templates_dir, 'eqpy')
     # copies template to .emews
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
     eqpy_ext_dir = copy_eqpy_code(eqpy_wd)
     rename_gitignore(eqpy_ext_dir)
-    config_to_cc(eqpy_wd, config_file, [config_for_all])
-    copy_common(eqpy_wd, ['eq'])
+    config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
+    copy_common(eqpy_wd, ['eq', 'eqpy'])
     cookiecutter(eqpy_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+
+
+def generate_eqr(output_dir, config_file):
+    eqr_template = os.path.join(templates_dir, 'eqr')
+    eqr_wd = copy_template_to_wd('eqr', eqr_template)
+    eqr_ext_dir = copy_eqr_code(eqr_wd)
+    rename_gitignore(eqr_ext_dir)
+    config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
+    copy_common(eqr_wd, ['eq', 'eqr'])
+    cookiecutter(eqr_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
