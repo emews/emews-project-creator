@@ -1,15 +1,63 @@
-### Examples ###
+## Installation ##
 
-Creates project stucture (`swift_proj/...`) in SampleModel
+1. Install the requirements using pip
+
+    * cookiecuter
+    * click
+    * pyyaml
+
+2. Clone the repository
+
+## Using emewscreator ##
+
+Make sure emewscreator in PYTHONPATH. For example
+
+`export PYTHONPATH="/home/nick/Documents/repos/emews-project-creator"`
+
+Usage:
+
+```
+$ python -m emewscreator -h
+Usage: emewscreator [OPTIONS] TEMPLATE
+
+Options:
+  -V, --version          Show the version and exit.
+  -o, --output-dir PATH  Directory into whch the project template will be
+                         generated.
+
+  -c, --config PATH      Path to the template configuration file. Option is
+                         mutually exclusive with emews.  [required]
+
+  -h, --help             Show this message and exit.
+  ```
+
+where TEMPLATE is one of `emews`, `sweep`, `eqpy`, or `eqr`. Sample configuration
+files for sweep, eqpy, and eqr are in the repository in `emewscreator/sample_cfgs`.
+
+### Creating a Project ###
 
 `python -m emewscreator emews -o SampleModel`
 
-Without -o, defaults to current directory
+Creates the default project stucture (`swift_proj/...`) in SampleModel directory. Without -o, the 
+structure will be created within the current directory.
 
-Creates sweep template in SampleModel project
-under swift_proj (default)
+### Sweep ###
 
-`python -m emewscreator sweep -o SampleModel`
+`python -m emewscreator sweep -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/sweep.yaml`
+
+Creates a sweep project in the SampleModel directory using the configuration in sweep.yaml. 
+
+### EQPy ###
+
+`python -m emewscreator eqpy -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqpy.yaml`
+
+Creates an eqpy project in the SampleModel directory using the configuration in eqpy.yaml. 
+
+### EQR ###
+
+`python -m emewscreator eqr -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqr.yaml`
+
+Creates an eqpy project in the SampleModel directory using the configuration in eqpy.yaml. 
 
 
 ### OLD README ####

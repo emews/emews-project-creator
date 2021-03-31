@@ -69,7 +69,7 @@ def validate_extra_context(ctx, param, value):
     type=click.Path(),
     required=True,
     cls=NotRequiredIfT, not_required_if=['emews'],
-    help='Path to the template configuration file',
+    help='Path to the template configuration file. ',
 )
 # @click.argument('extra_context', nargs=-1, callback=validate_extra_context)
 def main(template, output_dir, config):
