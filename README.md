@@ -22,7 +22,7 @@ Usage: emewscreator [OPTIONS] TEMPLATE
 
 Options:
   -V, --version          Show the version and exit.
-  -o, --output-dir PATH  Directory into whch the project template will be
+  -o, --output-dir PATH  Directory into which the project template will be
                          generated.
 
   -c, --config PATH      Path to the template configuration file. Option is
