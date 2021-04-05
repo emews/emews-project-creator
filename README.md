@@ -57,7 +57,7 @@ Creates an eqpy project in the SampleModel directory using the configuration in 
 
 `python -m emewscreator eqr -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqr.yaml`
 
-Creates an eqpy project in the SampleModel directory using the configuration in eqpy.yaml. 
+Creates an eqpy project in the SampleModel directory using the configuration in eqr.yaml. 
 
 
 ### OLD README ####
