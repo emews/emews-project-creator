@@ -31,15 +31,10 @@ Options:
   -h, --help             Show this message and exit.
   ```
 
-where TEMPLATE is one of `emews`, `sweep`, `eqpy`, or `eqr`. Sample configuration
+where TEMPLATE is one of `sweep`, `eqpy`, or `eqr`. Sample configuration
 files for sweep, eqpy, and eqr are in the repository in `emewscreator/sample_cfgs`.
 
-### Creating a Project ###
-
-`python -m emewscreator emews -o SampleModel`
-
-Creates the default project stucture (`swift_proj/...`) in SampleModel directory. Without -o, the 
-structure will be created within the current directory.
+The vanilla project structure can also be generated with a TEMPLATE of `emews`.
 
 ### Sweep ###
 
@@ -58,6 +53,14 @@ Creates an eqpy project in the SampleModel directory using the configuration in 
 `python -m emewscreator eqr -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqr.yaml`
 
 Creates an eqpy project in the SampleModel directory using the configuration in eqr.yaml. 
+
+### EMEWS ###
+
+`python -m emewscreator emews -o SampleModel`
+
+Creates the default project stucture (`swift_proj/...`) in SampleModel directory. Without -o, the 
+structure will be created within the current directory.
+
 
 
 ### OLD README ####
