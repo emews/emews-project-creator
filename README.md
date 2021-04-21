@@ -22,7 +22,7 @@ Usage: emewscreator [OPTIONS] TEMPLATE
 
 Options:
   -V, --version          Show the version and exit.
-  -o, --output-dir PATH  Directory into whch the project template will be
+  -o, --output-dir PATH  Directory into which the project template will be
                          generated.
 
   -c, --config PATH      Path to the template configuration file. Option is
@@ -57,7 +57,7 @@ Creates an eqpy project in the SampleModel directory using the configuration in 
 
 `python -m emewscreator eqr -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqr.yaml`
 
-Creates an eqpy project in the SampleModel directory using the configuration in eqpy.yaml. 
+Creates an eqpy project in the SampleModel directory using the configuration in eqr.yaml. 
 
 
 ### OLD README ####
