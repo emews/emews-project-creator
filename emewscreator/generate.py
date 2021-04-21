@@ -32,8 +32,11 @@ def copy_template_to_wd(template: str, template_dir, ):
     return template_wd
 
 
-def config_to_cc(template_dir, config_file, additional_context: List=[]):
+def config_to_cc(template_dir, config_file, additional_context: List=[]) -> Dict:
     """Converts a yaml config file to a cookiecutter json
+
+    Returns:
+        A dictionary holding the configuration info.
     """
     with open(config_file) as f_in:
         config = yaml.load(f_in, Loader=yaml.SafeLoader)
@@ -43,6 +46,8 @@ def config_to_cc(template_dir, config_file, additional_context: List=[]):
 
     with open(os.path.join(template_dir, 'cookiecutter.json'), 'w') as f_out:
         json.dump(config, f_out, indent=4)
+
+    return config
 
 
 def copy_common(proj_dir, j2s: List=[]):
@@ -67,7 +72,9 @@ def copy_common(proj_dir, j2s: List=[]):
 
 def generate_emews(output_dir, config_file):
     emews_template = os.path.join(templates_dir, 'emews')
-    cookiecutter(emews_template, output_dir=output_dir, overwrite_if_exists=True)
+    emews_wd = copy_template_to_wd('emews', emews_template)
+    config_to_cc(emews_wd, config_file, [])
+    cookiecutter(emews_template, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
 
 
 def config_for_all(config: Dict):
@@ -90,8 +97,10 @@ def config_for_eqr(config: Dict):
 def generate_sweep(output_dir, config_file):
     sweep_template = os.path.join(templates_dir, 'sweep')
     sweep_wd = copy_template_to_wd('sweep', sweep_template)
-    config_to_cc(sweep_wd, config_file, [config_for_all])
+    config = config_to_cc(sweep_wd, config_file, [config_for_all])
     copy_common(sweep_wd, ['sweep'])
+    if not os.path.exists(config['emews_root_directory']):
+        generate_emews(output_dir, config_file)
     cookiecutter(sweep_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
 
 
@@ -126,8 +135,10 @@ def generate_eqpy(output_dir, config_file):
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
     eqpy_ext_dir = copy_eqpy_code(eqpy_wd)
     rename_gitignore(eqpy_ext_dir)
-    config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
+    config = config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
     copy_common(eqpy_wd, ['eq', 'eqpy'])
+    if not os.path.exists(config['emews_root_directory']):
+        generate_emews(output_dir, config_file)
     cookiecutter(eqpy_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
 
 
@@ -136,6 +147,8 @@ def generate_eqr(output_dir, config_file):
     eqr_wd = copy_template_to_wd('eqr', eqr_template)
     eqr_ext_dir = copy_eqr_code(eqr_wd)
     rename_gitignore(eqr_ext_dir)
-    config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
+    config = config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
     copy_common(eqr_wd, ['eq', 'eqr'])
+    if not os.path.exists(config['emews_root_directory']):
+        generate_emews(output_dir, config_file)
     cookiecutter(eqr_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
