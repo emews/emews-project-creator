@@ -34,7 +34,7 @@ Options:
 where TEMPLATE is one of `sweep`, `eqpy`, or `eqr`. Sample configuration
 files for sweep, eqpy, and eqr are in the repository in `emewscreator/sample_cfgs`.
 
-The vanilla project structure can also be generated with a TEMPLATE of `emews`.
+The vanilla project structure can also be generated with a TEMPLATE of `emews`. 
 
 ### Sweep ###
 
@@ -56,7 +56,7 @@ Creates an eqpy project in the SampleModel directory using the configuration in 
 
 ### EMEWS ###
 
-`python -m emewscreator emews -o SampleModel`
+`python -m emewscreator emews -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/emews.yaml`
 
 Creates the default project stucture (`swift_proj/...`) in SampleModel directory. Without -o, the 
 structure will be created within the current directory.
