@@ -2,7 +2,7 @@
 
 1. Install the requirements using pip
 
-    * cookiecuter
+    * cookiecutter
     * click
     * pyyaml
 
