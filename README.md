@@ -10,7 +10,7 @@
 
 ## Using emewscreator ##
 
-Make sure emewscreator in PYTHONPATH. For example
+Make sure emewscreator is in PYTHONPATH. For example
 
 `export PYTHONPATH="/home/nick/Documents/repos/emews-project-creator"`
 
