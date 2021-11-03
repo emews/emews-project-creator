@@ -21,6 +21,7 @@ common_files = os.path.join(templates_dir, 'common/files')
 template_emews_root = '{{cookiecutter.emews_root_directory}}'
 
 emews_wd = os.path.join(str(pathlib.Path.home()), '.emews')
+emews_tag_file = '.CREATED_BY_EC'
 
 
 def copy_template_to_wd(template: str, template_dir, ):
@@ -73,8 +74,17 @@ def copy_common(proj_dir, j2s: List=[]):
 def generate_emews(output_dir, config_file):
     emews_template = os.path.join(templates_dir, 'emews')
     emews_wd = copy_template_to_wd('emews', emews_template)
-    config_to_cc(emews_wd, config_file, [])
+    config = config_to_cc(emews_wd, config_file, [])
     cookiecutter(emews_template, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+    emews_root_dir = config['emews_root_directory']
+    pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file)).touch()
+
+
+def check_gen_emews(config: Dict, output_dir: str, config_file: str):
+    emews_root_dir = config['emews_root_directory']
+    p = pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file))
+    if not p.exists():
+        generate_emews(output_dir, config_file)
 
 
 def config_for_all(config: Dict):
@@ -99,8 +109,7 @@ def generate_sweep(output_dir, config_file):
     sweep_wd = copy_template_to_wd('sweep', sweep_template)
     config = config_to_cc(sweep_wd, config_file, [config_for_all])
     copy_common(sweep_wd, ['sweep'])
-    if not os.path.exists(config['emews_root_directory']):
-        generate_emews(output_dir, config_file)
+    check_gen_emews(config, output_dir, config_file)
     cookiecutter(sweep_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
 
 
@@ -137,8 +146,7 @@ def generate_eqpy(output_dir, config_file):
     rename_gitignore(eqpy_ext_dir)
     config = config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
     copy_common(eqpy_wd, ['eq', 'eqpy'])
-    if not os.path.exists(config['emews_root_directory']):
-        generate_emews(output_dir, config_file)
+    check_gen_emews(config, output_dir, config_file)
     cookiecutter(eqpy_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
 
 
@@ -149,6 +157,5 @@ def generate_eqr(output_dir, config_file):
     rename_gitignore(eqr_ext_dir)
     config = config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
     copy_common(eqr_wd, ['eq', 'eqr'])
-    if not os.path.exists(config['emews_root_directory']):
-        generate_emews(output_dir, config_file)
+    check_gen_emews(config, output_dir, config_file)
     cookiecutter(eqr_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
