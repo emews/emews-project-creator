@@ -1,0 +1,13 @@
+{
+    "emews_root_directory" : "swift_proj",
+    "model_script_name" : "run_model",
+
+    "wf_file_name" : "sweep_workflow",
+    "cfg_file_name" : "sweep",
+    "cfg_walltime" : "01:00:00",
+    "cfg_queue" : "queue",
+    "cfg_project" : "project",
+    "cfg_nodes" : "4",
+    "cfg_ppn" : "4",
+    "cfg_upf" : "data/upf.txt"
+}

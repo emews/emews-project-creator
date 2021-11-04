@@ -1,0 +1,6 @@
+{
+    "emews_root_directory" : "swift_proj",
+    "_copy_without_render" : [
+        "etc/emews_utils.sh"
+    ]
+}
