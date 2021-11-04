@@ -13,7 +13,7 @@ from cookiecutter.vcs import clone
 
 
 this_path = os.path.dirname(os.path.abspath(__file__))
-templates_dir = os.path.join(this_path, '../templates')
+templates_dir = os.path.join(this_path, 'templates')
 j2s_dir = os.path.join(templates_dir, 'common/j2s')
 common_j2s = os.path.join(j2s_dir, 'common')
 common_hooks = os.path.join(templates_dir, 'common/hooks')

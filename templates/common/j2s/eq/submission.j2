@@ -1,7 +1,0 @@
-# echo's anything following this to standard out
-set -x
-SWIFT_FILE={{cookiecutter.wf_file_name}}.swift
-swift-t -n $PROCS $MACHINE -p -I ${{cookiecutter.eq_call_prefix | upper}} -r ${{cookiecutter.eq_call_prefix | upper}} \
-    -I $EMEWS_EXT -r $EMEWS_EXT \
-    $EMEWS_PROJECT_ROOT/swift/$SWIFT_FILE \
-    $CMD_LINE_ARGS

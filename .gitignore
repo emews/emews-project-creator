@@ -4,3 +4,6 @@ scratch/
 __pycache__
 obsolete
 .vscode
+
+dist/
+*.egg-info
