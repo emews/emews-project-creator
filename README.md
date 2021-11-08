@@ -137,6 +137,9 @@ R model exploration (ME) algorithm. The workflow will start the R ME
 which then iteratively provides json format input parameters for model
 execution.
 
+*Note*: The EQR extension requires an additional compilation step. Once the template has been run,
+see `ext/EQ-R/src/README.md` for compliation instructions. 
+
 Usage:
 
 ```
