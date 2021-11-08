@@ -114,6 +114,8 @@ def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
 
+    config['_copy_without_render'] = ['ext/EQ-R/src/*']
+
 
 def generate_sweep(output_dir, config_file):
     sweep_template = os.path.join(templates_dir, 'sweep')
@@ -142,9 +144,10 @@ def copy_eqpy_code(eqpy_wd):
 def copy_eqr_code(eqr_wd):
     clone('https://github.com/emews/EQ-R.git', clone_to_dir=emews_wd, no_input=True)
     src = os.path.join(emews_wd, 'EQ-R/src')
-    dst = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R')
-    # TODO Compile and copy the correct files
-    util.copy_files(src, dst, ['EQR.swift'])
+    dst = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
+    util.copy_files(src, dst, ['EQR.swift', 'BlockingQueue.h', 'EQR.cpp', 'EQR.h',
+                               'EQR.i', 'Makefile.in', 'bootstrap', 'configure.ac',
+                               'find-tcl.sh', 'make-package.tcl', 'settings.mk.in'])
     shutil.rmtree(os.path.join(emews_wd, 'EQ-R'), ignore_errors=True)
     return dst
 
