@@ -80,7 +80,7 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample sweep configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
+A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
 For additional explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
@@ -125,7 +125,7 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample EQPy configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
+A sample EQPy configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
 
 For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
@@ -170,6 +170,6 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample EQR configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
+A sample EQR configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
 
 For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
