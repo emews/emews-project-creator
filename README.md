@@ -1,6 +1,6 @@
-# Emews Creator
+# EMEWS Creator
 
-Emewscreator is a python package for creating skeleton workflows for the Extreme-scale Model Exploration with Swift (EMEWS). The EMEWS framework enables the direct integration of multi-language model exploration (ME) algorithms
+EMEWS Creator is a python package for creating workflow projects for the Extreme-scale Model Exploration with Swift (EMEWS). The EMEWS framework enables the direct integration of multi-language model exploration (ME) algorithms
 while scaling dynamic computational experiments to very large numbers (millions) of models on all major
 HPC platforms. EMEWS has been designed for any "black box" application code, such as agent-based and 
 microsimulation models or training of machine learning models, that require multiple runs as part of
@@ -8,13 +8,23 @@ heuristic model explorations. One of the main goals of EMEWS is to democratize t
 computing resources by making them accessible to more researchers in many more science domains.
 EMEWS is built on the Swift/T parallel scripting language.
 
-## Using emewscreator ##
+See the [EMEWS Site](https://emews.github.io/index.html) for more information.
 
-Make sure emewscreator is in PYTHONPATH. For example
+## Installation
 
-`export PYTHONPATH="/home/nick/Documents/repos/emews-project-creator"`
+EMEWS Creator can be downloaded and installed from PyPI using pip.
 
-Usage:
+```
+pip install emewscreator
+```
+
+## Using EMEWS Creator
+
+The following provides an overview of how to use EMEWSCreator to create
+project workflows. For a more comprehensive explanation see the
+[EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
+
+EMEWSCreator is run from the command line.
 
 ```
 $ python -m emewscreator -h
@@ -31,169 +41,135 @@ Options:
   -h, --help             Show this message and exit.
   ```
 
-where TEMPLATE is one of `sweep`, `eqpy`, or `eqr`. Sample configuration
-files for sweep, eqpy, and eqr are in the repository in `emewscreator/sample_cfgs`.
-
-The vanilla project structure can also be generated with a TEMPLATE of `emews`. 
+where TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`. Each
+workflow template requires a user provided configuration file that is used to
+create the various files and directories that make up the workflow. Sample
+configuration files can be found [here](https://github.com/emews/emews-project-creator/tree/master/example_cfgs)
+in the `example_cfgs` directory in the EMEWS Creator github repository.
 
 ### Sweep ###
 
-`python -m emewscreator sweep -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/sweep.yaml`
+The sweep template creates a sweep workflow in which EMEWS reads an input file,
+and runs an application (e.g., a simulation model) using each line of the input file
+as input to an application run.
 
-Creates a sweep project in the SampleModel directory using the configuration in sweep.yaml. 
+Usage:
+```
+$ python -m emewscreator sweep -o SampleModel -c sweep_config.yaml
+```
+
+The configuration file has the following entries:
+
+* `emews_root_directory` - the directory in which the workflow directories and files will be placed. If
+this doesn't exist, it will be created. 
+* `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
+submission, and swift script files. Spaces will be replaced by underscores.
+* `model_name` - the name of the model to run during the sweep. This will be used in the model execution
+bash script. Spaces will be replaced by underscores.
+* `upf` - the location of the unrolled parameter file (UPF) containing the collection of model 
+input parameters (one run per line) to sweep over.
+
+The configuration file can also contain entries for running the workflow on an HPC system
+where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
+See your HPC resource's documentation for details on how to set these. For non-HPC
+runs these can be omitted.
+
+* `walltime` - the estimated duration of the workflow job. The value must be surrounded by single quotes in order to parse correctly.
+* `queue` - the queue to run the workflow job on
+* `project` - the project to run the workflow job with
+* `nodes` - the number of nodes to allocate to the workflow job
+* `ppn` - the number of processes per node to allocate to the workflow job
+
+A sample sweep configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/sweep.yaml).
+
+For additional explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQPy ###
 
-`python -m emewscreator eqpy -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqpy.yaml`
+The EQPy template creates a workflow that uses emews queues for Python (EQPy) to 
+run an application (e.g., a simulation model) using input parameters provided by a
+Python model exploration (ME) algorithm. The workflow will start the Python ME
+which then iteratively provides json format input parameters for model
+execution.
 
-Creates an eqpy project in the SampleModel directory using the configuration in eqpy.yaml. 
+Usage:
+
+```
+$ python -m emewscreator eqpy -o SampleModel -c eqpy_config.yaml
+```
+
+The configuration file has the following entries:
+
+* `emews_root_directory` - the directory in which the workflow directories and files will be placed. If
+this doesn't exist, it will be created. 
+* `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
+submission, and swift script files. Spaces will be replaced by underscores.
+* `model_name` - the name of the model to run during the sweep. This will be used in the model execution
+bash script. Spaces will be replaced by underscores.
+* `me_algo_cfg_file_name` - the path to a configuration file for the Python ME algorithm. This
+path will be passed to the Python ME when it is initialized.
+* `me_module` - the Python module implementing the ME algorithm.
+* `trials` - the number of trials or replicates to perform for each model run.
+* `model_output_file_name` - each model run is passed a file path for writing its output.
+This is the name of that file.
+* `model_output_file_ext` - the file extension (e.g., `csv`) of the `model_output_file_name`
+
+The configuration file can also contain entries for running the workflow on an HPC system
+where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
+See your HPC resource's documentation for details on how to set these. For non-HPC
+runs these can be omitted.
+
+* `walltime` - the estimated duration of the workflow job. The value must be surrounded by single quotes in order to parse correctly.
+* `queue` - the queue to run the workflow job on
+* `project` - the project to run the workflow job with
+* `nodes` - the number of nodes to allocate to the workflow job
+* `ppn` - the number of processes per node to allocate to the workflow job
+
+A sample EQPy configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/eqpy.yaml).
+
+For more explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQR ###
 
-`python -m emewscreator eqr -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/eqr.yaml`
+The EQR template creates a workflow that uses emews queues for R (EQR) to 
+run an application (e.g., a simulation model) using input parameters provided by a
+R model exploration (ME) algorithm. The workflow will start the R ME
+which then iteratively provides json format input parameters for model
+execution.
 
-Creates an eqpy project in the SampleModel directory using the configuration in eqr.yaml. 
-
-### EMEWS ###
-
-`python -m emewscreator emews -o SampleModel -c /home/nick/Documents/repos/emews-project-creator/example_cfgs/emews.yaml`
-
-Creates the default project stucture (`swift_proj/...`) in SampleModel directory. Without -o, the 
-structure will be created within the current directory.
-
-
-
-### OLD README ####
-
-# lazybones-templates
-Lazybones templates for emews projects.
-
-See https://github.com/pledbrook/lazybones for lazybones install info
-
-## Installing the Templates ##
-
-The source for the templates is in the template folder. To install the templates so that they can be used via lazybones:
-```bash
-./gradlew installTemplateEmews
-```
-
-## Publishing the Templates ##
-
-The templates can be published to the emews/emews-templates bintray
-repository with
-
-```bash
-./gradlew publishTemplateEmews
-```
-
-This requires a gradle.properties file in the top directory with two properties:
+Usage:
 
 ```
-bintrayUsername=
-bintrayApiKey=
+$ python -m emewscreator eqr -o SampleModel -c eqr_config.yaml
 ```
 
-This file is not under version control for security reasons.
+The configuration file has the following entries:
 
-## Running the Templates ##
+* `emews_root_directory` - the directory in which the workflow directories and files will be placed. If
+this doesn't exist, it will be created. 
+* `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
+submission, and swift script files. Spaces will be replaced by underscores.
+* `model_name` - the name of the model to run during the sweep. This will be used in the model execution
+bash script. Spaces will be replaced by underscores.
+* `me_algo_cfg_file_name` - the path to a configuration file for the R ME algorithm. This
+path will be passed to the R ME when it is initialized.
+* `me_scrpt` - the path to the R script implementing the ME algorithm.
+* `trials` - the number of trials or replicates to perform for each model run.
+* `model_output_file_name` - each model run is passed a file path for writing its output.
+This is the name of that file.
+* `model_output_file_ext` - the file extension (e.g., `csv`) of the `model_output_file_name`
 
-The repository contains an *emews* template and 3 subtemplates *sweep*, *eqpy*, and *eqr*. The command
+The configuration file can also contain entries for running the workflow on an HPC system
+where a job is submitted via a HPC scheduler (e.g., the slurm scheduler).
+See your HPC resource's documentation for details on how to set these. For non-HPC
+runs these can be omitted.
 
-```bash
-lazybones create emews 0.0 X
-```
+* `walltime` - the estimated duration of the workflow job. The value must be surrounded by single quotes in order to parse correctly.
+* `queue` - the queue to run the workflow job on
+* `project` - the project to run the workflow job with
+* `nodes` - the number of nodes to allocate to the workflow job
+* `ppn` - the number of processes per node to allocate for the workflow job
 
-will create an EMEWS project structure in director *X*, using version 0.0 of the template. For example
+A sample EQR configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/eqr.yaml).
 
-```bash
-lazybones create emews 0.0 swift_project
-```
-
-will create the default EMEWS project structure in a swift_project directory.
-
-```
-swift_project\
-  data\
-  ext\
-  etc\
-  python\
-    test\
-  R\
-    test\
-  scripts\
-  swift\
-  README.md
-```
-The directories are intended to contain the following:
-
- * `data` - model input etc. data
- * `etc` - additional code used by EMEWS
- * `ext` - swift-t extensions such as eqpy, eqr
- * `python` - python code (e.g. model exploration algorithms written in python)
- * `python\test` - tests of the python code
- * `R` - R code (e.g. model exploration algorithms written R)
- * `R\test` - tests of the R code
- * `scripts` - any necessary scripts (e.g. scripts to launch a model), excluding scripts used to run the workflow.
- * `swift` - swift code
-
-## Subtemplates ##
-
-The subtemplates will populate the above directories with files appropriate for
-the type of workflow associated with that subtemplate. The subtemplates are
-executed with the command:
-
-```
-lazybones generate X
-```
-
-where X is the subtemplate name: *sweep*, *eqpy*, or *eqr*. Once the
-subtemplate has been generated the files can be edited to suit the
-current purpose. The files themselves contain comments to guide the
-customization. The subtemplates must be generated from within the directory
-created by the top-level *emews* template. Subtemplate generation will query
-the user for additional information (e.g. the model name) required to
-generate the template.
-
-### Sweep ###
-
-The *sweep* subtemplate generates files appropriate for a sweep through
-a collection of parameters, running the model for each set of parameters. By
-default, the parameters are defined in a input file where each line is a
-set of parameters to run.
-
-  * `swift/swift_run_sweep.sh` - bash script used to launch the workflow
-  * `swift/swift_run_sweep.swift` - swift script that will iterate through an
-  input file, passing each line of that input to a model. The model is called
-  from an app function.
-  * (optional) `scripts/X.sh` - the actual name of this file is derived from user
-  input during the subtemplate generation. The file is a bash script that
-  should be edited to call the model. The app function in
-  swift_run_sweep.swift calls this file.
-
-### EQ/Py ###
-
-The *eqpy* subtemplate generates files and code for model exploration using
-the EQ/Py EMEWS extension. This extension allows model runs and exploration
-to be controlled from a python code algorithm.
-
-The template installs the EQ/Py extension in ext/EQ-Py. The extension consists
-of two files.
-
-  * `ext/EQ-Py/eqpy.py`
-  * `ext/EQ-Py/EQPy.swift`
-
-These should not need to be edited by the user.
-
-The remaining files are generated in the `swift/` directory. Note that the file
-names are determined by user input and the names below are defaults.
-
-  * `swift/swift_run_eqpy.sh` - bash script used to launch the EQ/Py-based
-  workflow.
-  * `swift/swift_run_eqpy.swift` - a skeleton swift script for model exploration
-  runs whose parameters are generated from a python algorithm. See the
-  TODOs in the script for additional instructions.
-
-### EQ/R ###
-
-The *eqr* subtemplate ...
-
+For more explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)

@@ -39,6 +39,7 @@ def config_to_cc(template_dir, config_file, additional_context: List=[]) -> Dict
     Returns:
         A dictionary holding the configuration info.
     """
+
     with open(config_file) as f_in:
         config = yaml.load(f_in, Loader=yaml.SafeLoader)
 
@@ -95,13 +96,23 @@ def config_for_all(config: Dict):
     clean_model_name = util.clean_filename(config['model_name']).lower()
     config['model_launcher_name'] = f'run_{clean_model_name}'
 
+    hpc_schedule_defaults = {'walltime': '01:00:00', 'queue': 'queue', 'project': 'project',
+                             'nodes': 4, 'ppn': 4}
+    # add HPC defaults 'walltime' etc. to the config, if the user hasn't
+    # in order to prevent cookiecutter from failing.
+    for k, v in hpc_schedule_defaults.items():
+        if k not in config:
+            config[k] = v
+
 
 def config_for_eqpy(config: Dict):
-    pass
+    config['eq_call_prefix'] = 'EQPy'
+    config['me_output_type'] = 'json'
 
 
 def config_for_eqr(config: Dict):
-    pass
+    config['eq_call_prefix'] = 'EQR'
+    config['me_output_type'] = 'json'
 
 
 def generate_sweep(output_dir, config_file):

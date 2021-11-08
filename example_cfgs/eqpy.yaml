@@ -2,18 +2,15 @@ emews_root_directory : swift_proj
 workflow_name: eqpy workflow
 model_name: My Model
 
-cfg_walltime : 01:00:00
-cfg_queue : queue
-cfg_project : project
-cfg_nodes : 4
-cfg_ppn : 4
-cfg_me_algo_cfg_file_name : data/me_config.json
-cfg_trials: 2
+me_algo_cfg_file_name : data/me_config.json
+me_module : me
+trials: 2
 
 model_output_file_name : output
 model_output_file_ext : csv
-eq_call_prefix : EQPy
 
-me_module : me
-me_output_type : json
-
+walltime : '01:00:00'
+queue : queue
+project : project
+nodes : 4
+ppn : 4

@@ -19,7 +19,8 @@ class NotRequiredIfT(click.Option):
         self.not_required_if: list = kwargs.pop("not_required_if")
 
         assert self.not_required_if, "'not_required_if' parameter required"
-        kwargs["help"] = (kwargs.get("help", "") + "Option is mutually exclusive with " + ", ".join(self.not_required_if) + ".").strip()
+        kwargs["help"] = (kwargs.get("help", ""))
+        # + "Option is mutually exclusive with " + ", ".join(self.not_required_if) + ".").strip()
         super(NotRequiredIfT, self).__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
