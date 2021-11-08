@@ -138,7 +138,8 @@ which then iteratively provides json format input parameters for model
 execution.
 
 *Note*: The EQR extension requires an additional compilation step. Once the template has been run,
-see `ext/EQ-R/src/README.md` for compliation instructions. 
+see `{emews_root_directory}/ext/EQ-R/src/README.md` for compilation instructions. `{emews_root_directory}`
+is specified in the configuration file.
 
 Usage:
 
