@@ -80,7 +80,7 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample sweep configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/sweep.yaml).
+A sample sweep configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
 For additional explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
@@ -125,9 +125,9 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample EQPy configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/eqpy.yaml).
+A sample EQPy configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
 
-For more explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQR ###
 
@@ -168,8 +168,8 @@ runs these can be omitted.
 * `queue` - the queue to run the workflow job on
 * `project` - the project to run the workflow job with
 * `nodes` - the number of nodes to allocate to the workflow job
-* `ppn` - the number of processes per node to allocate for the workflow job
+* `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample EQR configuration file can found [here](https://github.com/emews/emews-project-creator/blob/138c6209c067f624947599e10ba629ad10a09f50/example_cfgs/eqr.yaml).
+A sample EQR configuration file can found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
 
-For more explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
