@@ -72,20 +72,20 @@ def copy_common(proj_dir, j2s: List=[]):
     return proj_common
 
 
-def generate_emews(output_dir, config_file):
+def generate_emews(output_dir, config_file, keep_existing):
     emews_template = os.path.join(templates_dir, 'emews')
     emews_wd = copy_template_to_wd('emews', emews_template)
     config = config_to_cc(emews_wd, config_file, [])
-    cookiecutter(emews_template, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+    cookiecutter(emews_template, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
     emews_root_dir = config['emews_root_directory']
     pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file)).touch()
 
 
-def check_gen_emews(config: Dict, output_dir: str, config_file: str):
+def check_gen_emews(config: Dict, output_dir: str, config_file: str, keep_existing):
     emews_root_dir = config['emews_root_directory']
     p = pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file))
     if not p.exists():
-        generate_emews(output_dir, config_file)
+        generate_emews(output_dir, config_file, keep_existing)
 
 
 def config_for_all(config: Dict):
@@ -113,17 +113,20 @@ def config_for_eqpy(config: Dict):
 def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
-
+    # tell cookiecutter to copy these files, but don't run
+    # jinja on them
     config['_copy_without_render'] = ['ext/EQ-R/src/*']
 
 
-def generate_sweep(output_dir, config_file):
+def generate_sweep(output_dir, config_file, keep_existing):
     sweep_template = os.path.join(templates_dir, 'sweep')
     sweep_wd = copy_template_to_wd('sweep', sweep_template)
     config = config_to_cc(sweep_wd, config_file, [config_for_all])
     copy_common(sweep_wd, ['sweep'])
-    check_gen_emews(config, output_dir, config_file)
-    cookiecutter(sweep_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+    check_gen_emews(config, output_dir, config_file, keep_existing)
+    # overwrite_if_exists prevents errors if the directory structure already exists
+    # skip_if_file_exists controls where existing files get overwritten
+    cookiecutter(sweep_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
 
 
 def rename_gitignore(source_dir):
@@ -152,7 +155,7 @@ def copy_eqr_code(eqr_wd):
     return dst
 
 
-def generate_eqpy(output_dir, config_file):
+def generate_eqpy(output_dir, config_file, keep_existing):
     eqpy_template = os.path.join(templates_dir, 'eqpy')
     # copies template to .emews
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
@@ -160,16 +163,20 @@ def generate_eqpy(output_dir, config_file):
     rename_gitignore(eqpy_ext_dir)
     config = config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
     copy_common(eqpy_wd, ['eq', 'eqpy'])
-    check_gen_emews(config, output_dir, config_file)
-    cookiecutter(eqpy_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+    check_gen_emews(config, output_dir, config_file, keep_existing)
+    # overwrite_if_exists prevents errors if the directory structure already exists
+    # skip_if_file_exists controls where existing files get overwritten
+    cookiecutter(eqpy_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
 
 
-def generate_eqr(output_dir, config_file):
+def generate_eqr(output_dir, config_file, keep_existing):
     eqr_template = os.path.join(templates_dir, 'eqr')
     eqr_wd = copy_template_to_wd('eqr', eqr_template)
     eqr_ext_dir = copy_eqr_code(eqr_wd)
     rename_gitignore(eqr_ext_dir)
     config = config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
     copy_common(eqr_wd, ['eq', 'eqr'])
-    check_gen_emews(config, output_dir, config_file)
-    cookiecutter(eqr_wd, output_dir=output_dir, overwrite_if_exists=True, no_input=True)
+    check_gen_emews(config, output_dir, config_file, keep_existing)
+    # overwrite_if_exists prevents errors if the directory structure already exists
+    # skip_if_file_exists controls where existing files get overwritten
+    cookiecutter(eqr_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)

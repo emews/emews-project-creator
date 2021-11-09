@@ -10,7 +10,7 @@ from emewscreator import __version__
 from . import generate
 
 # TODO make this such that external generates can be added
-generators = {'emews': generate.generate_emews, 'sweep': generate.generate_sweep,
+generators = {'sweep': generate.generate_sweep,
               'eqpy': generate.generate_eqpy, 'eqr': generate.generate_eqr}
 
 
@@ -72,8 +72,14 @@ def validate_extra_context(ctx, param, value):
     # cls=NotRequiredIfT, not_required_if=['emews'],
     help='Path to the template configuration file. ',
 )
+@click.option(
+    '-w',
+    '--overwrite',
+    is_flag=True,
+    help='Overwrite existing files'
+)
 # @click.argument('extra_context', nargs=-1, callback=validate_extra_context)
-def main(template, output_dir, config):
+def main(template, output_dir, config, overwrite):
     if template == 'help':
         click.echo(click.get_current_context().get_help())
         sys.exit(0)
@@ -84,7 +90,7 @@ def main(template, output_dir, config):
         if template not in generators:
             raise ClickException(f'Unknown template "{template}"')
         else:
-            generators[template](output_dir, config)
+            generators[template](output_dir, config, not overwrite)
 
 
 if __name__ == '__main__':
