@@ -1,6 +1,6 @@
 emews_root_directory : swift_proj
 workflow_name: eqr workflow
-model_name: My Model
+model_name: My Model eq
 
 me_algo_cfg_file_name : data/me_config.R
 trials: 2

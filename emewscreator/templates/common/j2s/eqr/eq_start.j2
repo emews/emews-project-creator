@@ -6,7 +6,7 @@
     EQR_put(me_loc, me_config_file) =>
       loop(me_loc) => {
         EQR_stop(me_loc) =>
-        EQR_delete_R(ME);
+        EQR_delete_R(me_loc);
         o = propagate();
     }
 }

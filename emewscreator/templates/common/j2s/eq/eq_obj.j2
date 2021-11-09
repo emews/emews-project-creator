@@ -18,16 +18,17 @@ app (file out, file err) run_model(file shfile, string param_line, string output
     string instance = "%s/instance_%i_%i/" % (turbine_output, me_iter, param_iter);
     mkdir(instance) => {
         foreach i in [0:n_trials-1:1] {
-            string instance_id = "%i_%i_%i" % (me_iter, param_iter, i+1);
-            results[i] = run_obj(params, (i+1), instance, instance_id);
-            log_lines[i] =  "%d|%d|%d|%s|%f" % (me_iter, param_iter, i+1, params, results[i]);
+            int trial = i + 1;
+            string instance_id = "%i_%i_%i" % (me_iter, param_iter, trial);
+            results[i] = run_obj(params, trial, instance, instance_id);
+            log_lines[i] =  "%d|%d|%d|%s|%f" % (me_iter, param_iter, trial, params, results[i]);
         }
     }
 
     obj_result = float2string(get_aggregate_result(results)) =>
-    // TODO remove if the instance directories are needed after 
-    // calculating the results
-    rm_dir(instance);
+    // TODO uncomment to delete the instance directory if
+    // it is not needed after the result have been computed.
+    // rm_dir(instance);
     string log_lines2[];
     foreach line, i in log_lines {
       log_lines2[i] = line + "|" + obj_result;
