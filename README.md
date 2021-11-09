@@ -24,7 +24,7 @@ The following provides an overview of how to use EMEWSCreator to create
 project workflows. For a more comprehensive explanation see the
 [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
-EMEWSCreator is run from the command line.
+EMEWS Creator is run from the command line.
 
 ```
 $ python -m emewscreator -h
@@ -32,20 +32,81 @@ Usage: emewscreator [OPTIONS] TEMPLATE
 
 Options:
   -V, --version          Show the version and exit.
-  -o, --output-dir PATH  Directory into which the project template will be
+  -o, --output-dir PATH  Directory into whch the project template will be
                          generated.
 
-  -c, --config PATH      Path to the template configuration file. Option is
-                         mutually exclusive with emews.  [required]
-
+  -c, --config PATH      Path to the template configuration file.   [required]
+  -w, --overwrite        Overwrite existing files
   -h, --help             Show this message and exit.
   ```
 
-where TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`. Each
-workflow template requires a user provided configuration file that is used to
-create the various files and directories that make up the workflow. Sample
+where TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`.
+EMEWS Creator will create a directory structure and the appropriate
+files within the directory specified by the `-o / --output-dir` argument. Each
+workflow template requires a user provided configuration file, specified
+using the `-c / --config` argument. Sample
 configuration files can be found [here](https://github.com/emews/emews-project-creator/tree/master/example_cfgs)
-in the `example_cfgs` directory in the EMEWS Creator github repository.
+in the `example_cfgs` directory in the EMEWS Creator github repository. 
+By default, any existing files within the directory will not be overwritten. 
+The `-w / --overwrite` argument reverses this behavior. When it is
+present, any existing files will be overwritten. This should be used
+with caution.
+
+### EMEWS Project Structure ###
+
+Each of the templates will create the default EMEWS project directory structure
+in `emews_root_directory` beneath the directory specified with the `-o / --output-dir`
+argument. `emews_root_directory` is specified in the templates configuration file. 
+Given an `emews_root_directory` of `swift_project`, the default structure is as follows:
+
+```
+swift_project/
+  data/
+  etc/
+  ext/
+  python/
+    test/
+  R/
+    test/
+  scripts/
+  swift/
+    cfgs/
+  README.md
+```
+
+The directories are intended to contain the following:
+
+ * `data` - model and algorithm input etc. data
+ * `etc` - additional code used by EMEWS
+ * `ext` - swift-t extensions, including the default emews utility code extension as well as
+ the eqr and eqpy extensions
+ * `python` - python code (e.g., model exploration algorithms written in python)
+ * `python\test` - tests of the python code
+ * `R` - R code (e.g., model exploration algorithms written R)
+ * `R\test` - tests of the R code
+ * `scripts` - any necessary scripts (e.g., scripts to launch an application), excluding scripts used to run the workflow
+ * `swift` - swift code and scripts used to submit and run the workflow
+
+Each of the templates will generate the following files. The file names
+are derived from parameters specified in the template configuration
+file. The names of those parameters are included in curly brackets
+in the file names below.
+
+* `swift/run_{workflow_name}.sh` - bash script used to launch the workflow
+* `swift/{workflow_name}.swift` - swift script that will iterate through an
+input file, passing each line of that input to a model. The model is called
+from an app function
+* `cfgs/{workflow_name}.cfg` - configuration file for running the workflow
+* `scripts/run_{model_name}.sh` -  script used to run the application (e.g., a model).
+
+These files may requre some user customization before they can be used. The 
+relevant sections are marked with `TODO`.
+
+Once any edits have been completed, the workflows can be run with:
+
+```
+$ run_{workflow_name}.sh <experiment_name> cfgs/{workflow_name}.cfg
+```
 
 ### Sweep ###
 
@@ -82,7 +143,8 @@ runs these can be omitted.
 
 A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
-For additional explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+
+For a more thorough explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQPy ###
 
@@ -127,7 +189,17 @@ runs these can be omitted.
 
 A sample EQPy configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
 
-For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+In addition to the default set of files described in the
+[EMEWS Project Structure](#emews-project-structure) section, the eqpy template will also
+install the EQ/Py EMEWS Swift-t extension in `ext/EQ-Py`. The extension
+consists of the following files.
+
+* `ext/EQ-Py/eqpy.py`
+* `ext/EQ-Py/EQPy.swift`
+
+These should not be edited by the user.
+
+For a more thorough explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQR ###
 
@@ -138,8 +210,7 @@ which then iteratively provides json format input parameters for model
 execution.
 
 *Note*: The EQR extension requires an additional compilation step. Once the template has been run,
-see `{emews_root_directory}/ext/EQ-R/src/README.md` for compilation instructions. `{emews_root_directory}`
-is specified in the configuration file.
+see `{emews_root_directory}/ext/EQ-R/src/README.md` for compilation instructions.
 
 Usage:
 
@@ -175,5 +246,10 @@ runs these can be omitted.
 * `ppn` - the number of processes per node to allocate to the workflow job
 
 A sample EQR configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
+
+In addition to the default set of files described in the
+[EMEWS Project Structure](#emews-project-structure) section, the eqr template will also
+install the source for EQ/R EMEWS Swift-t extension in `ext/EQ-R/src`. The extension needs 
+to be compiled before it can be used. See `ext/EQ-R/src/README.md` for compilation instructions.
 
 For additional explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
