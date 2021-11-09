@@ -43,7 +43,7 @@ Options:
 where TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`.
 EMEWS Creator will create a directory structure and the appropriate
 files within the directory specified by the `-o / --output-dir` argument. Each
-workflow template requires a user provided configuration file, specified
+workflow template requires a user provided configuration file in yaml format, specified
 using the `-c / --config` argument. Sample
 configuration files can be found [here](https://github.com/emews/emews-project-creator/tree/master/example_cfgs)
 in the `example_cfgs` directory in the EMEWS Creator github repository. 
@@ -52,11 +52,14 @@ The `-w / --overwrite` argument reverses this behavior. When it is
 present, any existing files will be overwritten. This should be used
 with caution.
 
-### EMEWS Project Structure ###
+## EMEWS Project Structure ##
 
-Each of the templates will create the default EMEWS project directory structure
+Each of the templates will create the default EMEWS project  structure
 in `emews_root_directory` beneath the directory specified with the `-o / --output-dir`
 argument. `emews_root_directory` is specified in the templates configuration file. 
+
+### Directories ###
+
 Given an `emews_root_directory` of `swift_project`, the default structure is as follows:
 
 ```
@@ -87,17 +90,20 @@ The directories are intended to contain the following:
  * `scripts` - any necessary scripts (e.g., scripts to launch an application), excluding scripts used to run the workflow
  * `swift` - swift code and scripts used to submit and run the workflow
 
+
+ ### Files ###
+
 Each of the templates will generate the following files. The file names
 are derived from parameters specified in the template configuration
 file. The names of those parameters are included in curly brackets
 in the file names below.
 
-* `swift/run_{workflow_name}.sh` - bash script used to launch the workflow
-* `swift/{workflow_name}.swift` - swift script that will iterate through an
-input file, passing each line of that input to a model. The model is called
-from an app function
-* `cfgs/{workflow_name}.cfg` - configuration file for running the workflow
-* `scripts/run_{model_name}.sh` -  script used to run the application (e.g., a model).
+* `swift/run_{workflow_name}.sh` - a bash script used to launch the workflow
+* `swift/{workflow_name}.swift` - the swift script that implements the template's workflow.
+* `scripts/run_{model_name}_X.sh` - a bash script used to run the model application.
+Here, X will be replaced by the template type (i.e., sweep, eqr, eqpy) as each
+model launch script is designed to work a particular type of wokflow.
+* `cfgs/{workflow_name}.cfg` - a configuration file for running the workflow
 
 These files may requre some user customization before they can be used. The 
 relevant sections are marked with `TODO`.
@@ -108,18 +114,11 @@ Once any edits have been completed, the workflows can be run with:
 $ run_{workflow_name}.sh <experiment_name> cfgs/{workflow_name}.cfg
 ```
 
-### Sweep ###
+## Templates ##
 
-The sweep template creates a sweep workflow in which EMEWS reads an input file,
-and runs an application (e.g., a simulation model) using each line of the input file
-as input to an application run.
-
-Usage:
-```
-$ python -m emewscreator sweep -o SampleModel -c sweep_config.yaml
-```
-
-The configuration file has the following entries:
+Each workflow template requires a user provided configuration file in yaml format, specified
+using the `-c / --config` argument. The following configuration parameters are
+common to all the templates.
 
 * `emews_root_directory` - the directory in which the workflow directories and files will be placed. If
 this doesn't exist, it will be created. 
@@ -127,8 +126,6 @@ this doesn't exist, it will be created.
 submission, and swift script files. Spaces will be replaced by underscores.
 * `model_name` - the name of the model to run during the sweep. This will be used in the model execution
 bash script. Spaces will be replaced by underscores.
-* `upf` - the location of the unrolled parameter file (UPF) containing the collection of model 
-input parameters (one run per line) to sweep over.
 
 The configuration file can also contain entries for running the workflow on an HPC system
 where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
@@ -141,8 +138,24 @@ runs these can be omitted.
 * `nodes` - the number of nodes to allocate to the workflow job
 * `ppn` - the number of processes per node to allocate to the workflow job
 
-A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
+### Sweep ###
 
+The sweep template creates a sweep workflow in which EMEWS reads an input file,
+and runs an application (e.g., a simulation model) using each line of the input file
+as input to an application run.
+
+Usage:
+```
+$ python -m emewscreator sweep -o SampleModel -c sweep_config.yaml
+```
+
+In addition to the common configuration parameters described [above](#templates),
+the configuration file for a sweep requires an additional parameter.
+
+* `upf` - the location of the unrolled parameter file (UPF) containing the collection of model 
+input parameters (one run per line) to sweep over.
+
+A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
 For a more thorough explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 

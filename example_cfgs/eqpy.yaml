@@ -1,6 +1,6 @@
 emews_root_directory : swift_proj
 workflow_name: eqpy workflow
-model_name: my model eq
+model_name: My Model
 
 me_algo_cfg_file_name : data/me_config.json
 me_module : me

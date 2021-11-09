@@ -7,7 +7,7 @@ import emews;
 string emews_root = getenv("EMEWS_PROJECT_ROOT");
 string turbine_output = getenv("TURBINE_OUTPUT");
 
-file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}.sh");
+file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}_{{cookiecutter.wf_file_name}}.sh");
 file upf = input(argv("f"));
 
 // app function used to run the model

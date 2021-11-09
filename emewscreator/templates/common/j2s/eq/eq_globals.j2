@@ -5,6 +5,6 @@ string resident_work_ranks = getenv("RESIDENT_WORK_RANKS");
 string r_ranks[] = split(resident_work_ranks,",");
 
 
-file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}.sh");
+file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}_{{cookiecutter.wf_file_name}}.sh");
 int n_trials = toint(argv("trials", "1"));
 string me_config_file = argv("me_config_file");
