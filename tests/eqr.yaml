@@ -1,0 +1,16 @@
+emews_root_directory : swift_proj
+workflow_name: eqr workflow
+model_name: My Model
+
+me_algo_cfg_file_name : data/me_config.R
+trials: 2
+me_script : R/me.R
+
+model_output_file_name : output
+model_output_file_ext : csv
+
+walltime : '01:00:00'
+queue : queue
+project : project
+nodes : 4
+ppn : 4
