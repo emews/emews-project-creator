@@ -62,7 +62,7 @@ def validate_extra_context(ctx, param, value):
     '--output-dir',
     default='.',
     type=click.Path(),
-    help='Directory into whch the project template will be generated.',
+    help='Directory into which the project template will be generated',
 )
 @click.option(
     '-c',
@@ -70,7 +70,7 @@ def validate_extra_context(ctx, param, value):
     type=click.Path(),
     required=True,
     # cls=NotRequiredIfT, not_required_if=['emews'],
-    help='Path to the template configuration file. ',
+    help='Path to the template configuration file ',
 )
 @click.option(
     '-w',

@@ -1,6 +1,6 @@
 # EMEWS Creator
 
-EMEWS Creator is a python package for creating workflow projects for the Extreme-scale Model Exploration with Swift (EMEWS).
+EMEWS Creator is a Python package for creating workflow projects for EMEWS (Extreme-scale Model Exploration with Swift).
 The EMEWS framework enables the direct integration of multi-language model exploration (ME) algorithms
 while scaling dynamic computational experiments to very large numbers (millions) of models on all major
 HPC platforms. EMEWS has been designed for any "black box" application code, such as agent-based and 
@@ -9,7 +9,7 @@ heuristic model explorations. One of the main goals of EMEWS is to democratize t
 computing resources by making them accessible to more researchers in many more science domains.
 EMEWS is built on the Swift/T parallel scripting language.
 
-See the [EMEWS Site](https://emews.github.io/index.html) for more information.
+See the [EMEWS Site](https://emews.github.io) for more information.
 
 ## Installation
 
@@ -22,7 +22,7 @@ pip install emewscreator
 ## Using EMEWS Creator
 
 The following provides an overview of how to use EMEWS Creator to create
-project workflows. For a more comprehensive explanation see the
+workflow projects. For a more comprehensive explanation see the
 [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
 EMEWS Creator is run from the command line.
@@ -32,13 +32,13 @@ $ python -m emewscreator -h
 Usage: emewscreator [OPTIONS] TEMPLATE
 
 Options:
-  -V, --version          Show the version and exit.
-  -o, --output-dir PATH  Directory into whch the project template will be
-                         generated.
+  -V, --version          Show the version and exit
+  -o, --output-dir PATH  Directory into which the project template will be
+                         generated
 
-  -c, --config PATH      Path to the template configuration file.   [required]
+  -c, --config PATH      Path to the template configuration file   [required]
   -w, --overwrite        Overwrite existing files
-  -h, --help             Show this message and exit.
+  -h, --help             Show this message and exit
   ```
 
 TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`.
@@ -89,14 +89,14 @@ The directories are intended to contain the following:
 
  * `data` - date required by the model and algorithm (inputs, etc.).
  * `etc` - additional code used by EMEWS
- * `ext` - swift-t extensions, including the default emews utility code extension as well as
+ * `ext` - Swift/T extensions, including the default emews utility code extension as well as
  the EQ/R and EQ/Py extensions
- * `python` - python code (e.g., model exploration algorithms written in python)
- * `python\test` - tests of the python code
+ * `python` - Python code (e.g., model exploration algorithms written in Python)
+ * `python\test` - tests of the Python code
  * `R` - R code (e.g., model exploration algorithms written R)
  * `R\test` - tests of the R code
  * `scripts` - any necessary scripts (e.g., scripts to launch a model), excluding scripts used to run the workflow
- * `swift` - swift code and scripts used to submit and run the workflow
+ * `swift` - Swift/T code and scripts used to submit and run the workflow
 
  ### Files ###
 
@@ -110,7 +110,7 @@ in the file names below.
 * `scripts/run_{model_name}_{workflow_name}.sh` - a bash script used to run the model application.
 * `cfgs/{workflow_name}.cfg` - a configuration file for running the workflow
 
-These files may requre some user customization before they can be used. The 
+These files may require some user customization before they can be used. The 
 relevant sections are marked with `TODO`.
 
 Once any edits have been completed, the workflows can be run with:
@@ -166,7 +166,7 @@ For a more thorough explanation of the sweep workflow, see the [EMEWS Tutorial](
 
 ### EQPy ###
 
-The EQPy template creates a workflow that uses emews queues for Python (EQ/Py) to 
+The EQPy template creates a workflow that uses EMEWS Queues for Python (EQPy) to 
 run an application using input parameters provided by a
 Python model exploration (ME) algorithm. The workflow will start the Python ME
 which then iteratively provides json format input parameters for model
@@ -179,12 +179,12 @@ $ python -m emewscreator eqpy -o <output_directory> -c <eqpy_config.yaml>
 ```
 
 In addition to the common configuration parameters described [above](#templates),
-the configuration file for an eqpy workflow requires the following:
+the configuration file for an EQPy workflow requires the following:
 
 * `me_algo_cfg_file_name` - the path to a configuration file for the Python ME algorithm. This
 path will be passed to the Python ME when it is initialized.
-* `me_module` - the Python module implementing the ME algorithm.
-* `trials` - the number of trials or replicates to perform for each model run.
+* `me_module` - the Python module implementing the ME algorithm
+* `trials` - the number of trials or replicates to perform for each model run
 * `model_output_file_name` - each model run is passed a file path for writing its output.
 This is the name of that file.
 * `model_output_file_ext` - the file extension (e.g., `csv`) of the `model_output_file_name`
@@ -193,7 +193,7 @@ A sample `eqpy` configuration file can be found [here](https://github.com/emews/
 
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqpy template will also
-install the EQ/Py EMEWS Swift-t extension in `ext/EQ-Py`. The extension
+install the EQPy EMEWS Swift-t extension in `ext/EQ-Py`. The extension
 consists of the following files.
 
 * `ext/EQ-Py/eqpy.py`
@@ -201,11 +201,11 @@ consists of the following files.
 
 These should not be edited by the user.
 
-For a more thorough explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For a more thorough explanation of Python-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
 
 ### EQR ###
 
-The EQR template creates a workflow that uses emews queues for R (EQR) to 
+The EQR template creates a workflow that uses EMEWS Queues for R (EQR) to 
 run an application using input parameters provided by a
 R model exploration (ME) algorithm. The workflow will start the R ME
 which then iteratively provides json format input parameters for model
@@ -221,12 +221,12 @@ $ python -m emewscreator eqr -o <output_directory> -c <eqr_config.yaml>
 ```
 
 In addition to the common configuration parameters described [above](#templates),
-the configuration file for an eqr workflow requires the following:
+the configuration file for an EQR workflow requires the following:
 
 * `me_algo_cfg_file_name` - the path to a configuration file for the R ME algorithm. This
 path will be passed to the R ME when it is initialized.
-* `me_scrpt` - the path to the R script implementing the ME algorithm.
-* `trials` - the number of trials or replicates to perform for each model run.
+* `me_scrpt` - the path to the R script implementing the ME algorithm
+* `trials` - the number of trials or replicates to perform for each model run
 * `model_output_file_name` - each model run is passed a file path for writing its output.
 This is the name of that file.
 * `model_output_file_ext` - the file extension (e.g., `csv`) of the `model_output_file_name`
@@ -239,4 +239,4 @@ In addition to the default set of files described in the
 install the source for EQ/R EMEWS Swift-t extension in `ext/EQ-R/src`. The extension needs 
 to be compiled before it can be used. See `ext/EQ-R/src/README.md` for compilation instructions.
 
-For a more thorough explanation of EMEWS Queues and ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
