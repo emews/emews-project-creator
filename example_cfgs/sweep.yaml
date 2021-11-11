@@ -1,9 +1,6 @@
-
-
 emews_root_directory : swift_proj
 workflow_name: sweep workflow
 model_name: My Model
-upf : data/upf.txt
 
 walltime : '24:00:00'
 queue : queue
