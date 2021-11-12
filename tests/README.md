@@ -22,7 +22,7 @@ just echos the commmand line passed to it.
 four instance directories, each containing two runs.
 
 ## EQR ##
-1. Run the eqpy template using eqpy.yaml.
+1. Run the eqr template using eqr.yaml.
 2. Copy me_config.R to swift_proj/data.
 3. Copy me.R to swift_proj/R
 4. Update the scripts/run_my_model_eqpy_workflow.sh with the MODEL_CMD etc. in run_my_model.sh (lines 43 - 48)
