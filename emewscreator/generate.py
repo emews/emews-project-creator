@@ -36,7 +36,7 @@ def copy_template_to_wd(template: str, template_dir, ):
     return template_wd
 
 
-def config_to_cc(template_dir, config_file, additional_context: List=[]) -> Dict:
+def config_to_cc(template_dir, emews_root, config_file, additional_context: List=[]) -> Dict:
     """Converts a yaml config file to a cookiecutter json
 
     Returns:
@@ -46,13 +46,19 @@ def config_to_cc(template_dir, config_file, additional_context: List=[]) -> Dict
     with open(config_file) as f_in:
         config = yaml.load(f_in, Loader=yaml.SafeLoader)
 
+    # User specifies the emews root, but cookiecutter actually
+    # resolves the templates into the parent directory of emews root.
+    # So, here we split the path into those parts.
+    config['emews_root_directory'] = os.path.basename(emews_root)
+    parent_dir = os.path.dirname(emews_root)
+
     for ctx in additional_context:
         ctx(config)
 
     with open(os.path.join(template_dir, 'cookiecutter.json'), 'w') as f_out:
         json.dump(config, f_out, indent=4)
 
-    return config
+    return (parent_dir, config)
 
 
 def copy_common(proj_dir, j2s: List=[]):
@@ -75,20 +81,18 @@ def copy_common(proj_dir, j2s: List=[]):
     return proj_common
 
 
-def generate_emews(output_dir, config_file, keep_existing):
+def generate_emews(emews_root, config_file, keep_existing):
     emews_template = os.path.join(templates_dir, 'emews')
     emews_wd = copy_template_to_wd('emews', emews_template)
-    config = config_to_cc(emews_wd, config_file, [])
-    cookiecutter(emews_template, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
-    emews_root_dir = config['emews_root_directory']
-    pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file)).touch()
+    output_dir, _ = config_to_cc(emews_wd, emews_root, config_file, [])
+    cookiecutter(emews_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
+    pathlib.Path('{}/{}'.format(emews_root, emews_tag_file)).touch()
 
 
-def check_gen_emews(config: Dict, output_dir: str, config_file: str, keep_existing):
-    emews_root_dir = config['emews_root_directory']
-    p = pathlib.Path('{}/{}/{}'.format(output_dir, emews_root_dir, emews_tag_file))
+def check_gen_emews(emews_root: str, config_file: str, keep_existing):
+    p = pathlib.Path('{}/{}'.format(emews_root, emews_tag_file))
     if not p.exists():
-        generate_emews(output_dir, config_file, keep_existing)
+        generate_emews(emews_root, config_file, keep_existing)
 
 
 def config_for_all(config: Dict):
@@ -127,12 +131,12 @@ def config_for_eqr(config: Dict):
         config['eqr_location'] = DEFAULT_EQR_EXT
 
 
-def generate_sweep(output_dir, config_file, keep_existing):
+def generate_sweep(emews_root, config_file, keep_existing):
     sweep_template = os.path.join(templates_dir, 'sweep')
     sweep_wd = copy_template_to_wd('sweep', sweep_template)
-    config = config_to_cc(sweep_wd, config_file, [config_for_all])
+    output_dir, config = config_to_cc(sweep_wd, emews_root, config_file, [config_for_all])
     copy_common(sweep_wd, ['sweep'])
-    check_gen_emews(config, output_dir, config_file, keep_existing)
+    check_gen_emews(emews_root, config_file, keep_existing)
     # overwrite_if_exists prevents errors if the directory structure already exists
     # skip_if_file_exists controls where existing files get overwritten
     cookiecutter(sweep_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
@@ -161,11 +165,11 @@ def copy_eqr_code(eqr_location):
     shutil.rmtree(os.path.join(emews_wd, 'EQ-R'), ignore_errors=True)
 
 
-def generate_eqpy(output_dir, config_file, keep_existing):
+def generate_eqpy(emews_root, config_file, keep_existing):
     eqpy_template = os.path.join(templates_dir, 'eqpy')
     # copies template to .emews
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
-    config = config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
+    output_dir, config = config_to_cc(eqpy_wd, emews_root, config_file, [config_for_all, config_for_eqpy])
     eqpy_location = config['eqpy_location']
     if eqpy_location == DEFAULT_EQPY_EXT:
         eqpy_location = os.path.join(eqpy_wd, template_emews_root, 'ext/EQ-Py')
@@ -175,16 +179,16 @@ def generate_eqpy(output_dir, config_file, keep_existing):
         copy_eqpy_code(eqpy_location)
     rename_gitignore(eqpy_location)
     copy_common(eqpy_wd, ['eq', 'eqpy'])
-    check_gen_emews(config, output_dir, config_file, keep_existing)
+    check_gen_emews(emews_root, config_file, keep_existing)
     # overwrite_if_exists prevents errors if the directory structure already exists
     # skip_if_file_exists controls where existing files get overwritten
     cookiecutter(eqpy_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
 
 
-def generate_eqr(output_dir, config_file, keep_existing):
+def generate_eqr(emews_root, config_file, keep_existing):
     eqr_template = os.path.join(templates_dir, 'eqr')
     eqr_wd = copy_template_to_wd('eqr', eqr_template)
-    config = config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
+    output_dir, config = config_to_cc(eqr_wd, emews_root, config_file, [config_for_all, config_for_eqr])
     eqr_location = config['eqr_location']
     if eqr_location == DEFAULT_EQR_EXT:
         eqr_location = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
@@ -195,7 +199,7 @@ def generate_eqr(output_dir, config_file, keep_existing):
         copy_eqr_code(eqr_location)
     rename_gitignore(eqr_location)
     copy_common(eqr_wd, ['eq', 'eqr'])
-    check_gen_emews(config, output_dir, config_file, keep_existing)
+    check_gen_emews(emews_root, config_file, keep_existing)
     # overwrite_if_exists prevents errors if the directory structure already exists
     # skip_if_file_exists controls where existing files get overwritten
     cookiecutter(eqr_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True, no_input=True)
