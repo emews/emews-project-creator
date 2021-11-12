@@ -31,6 +31,3 @@ The directories are intended to contain the following:
  * `scripts` - any necessary scripts (e.g. scripts to launch a model), excluding
     scripts used to run the workflow.
  * `swift` - swift code
-
-Use the subtemplates to customize this structure for particular types of
-workflows. These are: sweep, eqpy, and eqr.
