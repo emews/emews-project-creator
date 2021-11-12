@@ -24,7 +24,7 @@ emews_wd = os.path.join(str(pathlib.Path.home()), '.emews')
 emews_tag_file = '.CREATED_BY_EC'
 
 DEFAULT_EQPY_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-Py'
-DEFAULT_EQR_EXT = '$EMEWS_PROJECT_ROOT/ext/EQR'
+DEFAULT_EQR_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-R'
 OUTPUT_DIR_KEY = 'output_dir'
 
 
