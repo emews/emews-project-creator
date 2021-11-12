@@ -32,13 +32,18 @@ $ python -m emewscreator -h
 Usage: emewscreator [OPTIONS] TEMPLATE
 
 Options:
-  -V, --version          Show the version and exit
-  -o, --output-dir PATH  Directory into which the project template will be
-                         generated
+  -V, --version             Show the version and exit.
+  -o, --output-dir PATH     Directory into which the project template will be
+                            generated. Defaults to the current directory
 
-  -c, --config PATH      Path to the template configuration file   [required]
-  -w, --overwrite        Overwrite existing files
-  -h, --help             Show this message and exit
+  -c, --config PATH         Path to the template configuration file
+                            [required]
+
+  -w, --overwrite           Overwrite existing files
+  -n, --workflow-name TEXT  Name of the workflow. Overrides the configuration
+                            file workflow_name parameter
+
+  -h, --help                Show this message and exit.
   ```
 
 TEMPLATE is one of the three workflow types: `sweep`, `eqpy`, or `eqr`.
@@ -51,7 +56,10 @@ in the `example_cfgs` directory in the EMEWS Creator github repository.
 By default, any existing files within the directory will *not* be overwritten. 
 The `-w / --overwrite` argument reverses this behavior. When it is
 present, any existing files will be overwritten. This should be used
-with caution.
+with caution. `-n / --workflow-name` can be used to specify the `workflow_name`
+configuration parameter or override the existing value in a workflow template
+comfiguration file. See the [templates](#templates) section for more on the
+`workflow_name` parameter.
 
 ## EMEWS Project Structure ##
 
@@ -121,16 +129,17 @@ $ run_{workflow_name}.sh <experiment_name> cfgs/{workflow_name}.cfg
 ## Templates ##
 
 Each workflow template requires a user provided configuration file in yaml format, specified
-using the `-c / --config` argument. The following configuration parameters are *REQUIRED*,
+using the `-c / --config` argument. The following configuration parameters are **REQUIRED**,
 and common to all the templates.
 
 * `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
-submission, and swift script files. Spaces will be replaced by underscores. **The `workflow_name` should
-be unique among all the workflows under output directory.**
+submission, and swift script files. Spaces will be replaced by underscores. 
+This can also be specified using the `-n / --workflow-name` command line argument.
+**The `workflow_name` should be unique among all the workflows in output directory.** 
 * `model_name` - the name of the model to run during the sweep. This will be used in the model execution
 bash script. Spaces will be replaced by underscores.
 
-The configuration file can also contain *OPTIONAL* entries for running the workflow on an HPC system
+The configuration file can also contain **OPTIONAL** entries for running the workflow on an HPC system
 where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
 See your HPC resource's documentation for details on how to set these. 
 
@@ -169,7 +178,7 @@ $ python -m emewscreator eqpy -o <output_directory> -c <eqpy_config.yaml>
 ```
 
 In addition to the common configuration parameters described [above](#templates),
-the configuration file for an EQPy workflow _requires_ the following:
+the configuration file for an EQPy workflow **requires** the following:
 
 * `me_algo_cfg_file_name` - the path to a configuration file for the Python ME algorithm. This
 path will be passed to the Python ME when it is initialized.
@@ -185,7 +194,7 @@ A sample `eqpy` configuration file can be found [here](https://github.com/emews/
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqpy template will also
 install the EQPy EMEWS Swift-t extension. By default, the extension will be installed in
-in `ext/EQ-Py`. An alternative location can be specified with the _optional_ `eqpy_location`
+in `ext/EQ-Py`. An alternative location can be specified with the **optional** `eqpy_location`
 configuration parameter.
 
 * `eqpy_location` - specifies the location of the eqpy extension (defaults to `ext/EQ-Py`)
@@ -220,7 +229,7 @@ $ python -m emewscreator eqr -o <output_directory> -c <eqr_config.yaml>
 ```
 
 In addition to the common configuration parameters described [above](#templates),
-the configuration file for an EQR workflow requires the following:
+the configuration file for an EQR workflow **requires** the following:
 
 * `me_algo_cfg_file_name` - the path to a configuration file for the R ME algorithm. This
 path will be passed to the R ME when it is initialized.
@@ -236,7 +245,7 @@ A sample EQR configuration file can be found [here](https://github.com/emews/eme
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqr template will also
 install the source for EQ/R EMEWS Swift-t extension. By default, the extension will be installed 
-in `ext/EQ-R`. An alternative location can be specified with the _optional_ `eqr_location`
+in `ext/EQ-R`. An alternative location can be specified with the **optional** `eqr_location`
 configuration parameter.
 
 * `eqr_location` - specifies the location of the eqr extension (defaults to `ext/EQ-R`)
