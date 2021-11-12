@@ -23,6 +23,9 @@ template_emews_root = '{{cookiecutter.emews_root_directory}}'
 emews_wd = os.path.join(str(pathlib.Path.home()), '.emews')
 emews_tag_file = '.CREATED_BY_EC'
 
+DEFAULT_EQPY_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-Py'
+DEFAULT_EQR_EXT = '$EMEWS_PROJECT_ROOT/ext/EQR'
+
 
 def copy_template_to_wd(template: str, template_dir, ):
     os.makedirs(emews_wd, exist_ok=True)
@@ -109,6 +112,9 @@ def config_for_eqpy(config: Dict):
     config['eq_call_prefix'] = 'EQPy'
     config['me_output_type'] = 'json'
 
+    if 'eqpy_location' not in config:
+        config['eqpy_location'] = DEFAULT_EQPY_EXT
+
 
 def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
@@ -116,6 +122,9 @@ def config_for_eqr(config: Dict):
     # tell cookiecutter to copy these files, but don't run
     # jinja on them
     config['_copy_without_render'] = ['ext/EQ-R/src/*']
+
+    if 'eqr_location' not in config:
+        config['eqr_location'] = DEFAULT_EQR_EXT
 
 
 def generate_sweep(output_dir, config_file, keep_existing):
@@ -131,37 +140,40 @@ def generate_sweep(output_dir, config_file, keep_existing):
 
 def rename_gitignore(source_dir):
     src = os.path.join(source_dir, 'gitignore.txt')
-    dst = os.path.join(source_dir, '.gitignore')
-    os.rename(src, dst)
+    if os.path.exists(src):
+        dst = os.path.join(source_dir, '.gitignore')
+        os.rename(src, dst)
 
 
-def copy_eqpy_code(eqpy_wd):
+def copy_eqpy_code(eqpy_location):
     clone('https://github.com/emews/EQ-Py.git', clone_to_dir=emews_wd, no_input=True)
     src = os.path.join(emews_wd, 'EQ-Py/src')
-    dst = os.path.join(eqpy_wd, template_emews_root, 'ext/EQ-Py')
-    util.copy_files(src, dst, ['eqpy.py', 'EQPy.swift'])
+    util.copy_files(src, eqpy_location, ['eqpy.py', 'EQPy.swift'])
     shutil.rmtree(os.path.join(emews_wd, 'EQ-Py'), ignore_errors=True)
-    return dst
 
 
-def copy_eqr_code(eqr_wd):
+def copy_eqr_code(eqr_location):
     clone('https://github.com/emews/EQ-R.git', clone_to_dir=emews_wd, no_input=True)
     src = os.path.join(emews_wd, 'EQ-R/src')
-    dst = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
-    util.copy_files(src, dst, ['EQR.swift', 'BlockingQueue.h', 'EQR.cpp', 'EQR.h',
-                               'EQR.i', 'Makefile.in', 'bootstrap', 'configure.ac',
-                               'find-tcl.sh', 'make-package.tcl', 'settings.mk.in'])
+    util.copy_files(src, eqr_location, ['EQR.swift', 'BlockingQueue.h', 'EQR.cpp', 'EQR.h',
+                                        'EQR.i', 'Makefile.in', 'bootstrap', 'configure.ac',
+                                        'find-tcl.sh', 'make-package.tcl', 'settings.mk.in'])
     shutil.rmtree(os.path.join(emews_wd, 'EQ-R'), ignore_errors=True)
-    return dst
 
 
 def generate_eqpy(output_dir, config_file, keep_existing):
     eqpy_template = os.path.join(templates_dir, 'eqpy')
     # copies template to .emews
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
-    eqpy_ext_dir = copy_eqpy_code(eqpy_wd)
-    rename_gitignore(eqpy_ext_dir)
     config = config_to_cc(eqpy_wd, config_file, [config_for_all, config_for_eqpy])
+    eqpy_location = config['eqpy_location']
+    if eqpy_location == DEFAULT_EQPY_EXT:
+        eqpy_location = os.path.join(eqpy_wd, template_emews_root, 'ext/EQ-Py')
+        copy_eqpy_code(eqpy_location)
+    elif not os.path.exists(eqpy_location):
+        os.makedirs(eqpy_location)
+        copy_eqpy_code(eqpy_location)
+    rename_gitignore(eqpy_location)
     copy_common(eqpy_wd, ['eq', 'eqpy'])
     check_gen_emews(config, output_dir, config_file, keep_existing)
     # overwrite_if_exists prevents errors if the directory structure already exists
@@ -172,9 +184,16 @@ def generate_eqpy(output_dir, config_file, keep_existing):
 def generate_eqr(output_dir, config_file, keep_existing):
     eqr_template = os.path.join(templates_dir, 'eqr')
     eqr_wd = copy_template_to_wd('eqr', eqr_template)
-    eqr_ext_dir = copy_eqr_code(eqr_wd)
-    rename_gitignore(eqr_ext_dir)
     config = config_to_cc(eqr_wd, config_file, [config_for_all, config_for_eqr])
+    eqr_location = config['eqr_location']
+    if eqr_location == DEFAULT_EQR_EXT:
+        eqr_location = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
+        copy_eqr_code(eqr_location)
+    elif not os.path.exists(eqr_location):
+        eqr_location = os.path.join(eqr_location, 'src')
+        os.makedirs(eqr_location)
+        copy_eqr_code(eqr_location)
+    rename_gitignore(eqr_location)
     copy_common(eqr_wd, ['eq', 'eqr'])
     check_gen_emews(config, output_dir, config_file, keep_existing)
     # overwrite_if_exists prevents errors if the directory structure already exists
