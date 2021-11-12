@@ -62,7 +62,7 @@ def validate_extra_context(ctx, param, value):
     '--output-dir',
     default='.',
     type=click.Path(),
-    help='Directory into which the project template will be generated',
+    help='Directory into which the project template will be generated. Defaults to the current directory',
 )
 @click.option(
     '-c',
@@ -78,8 +78,14 @@ def validate_extra_context(ctx, param, value):
     is_flag=True,
     help='Overwrite existing files'
 )
+@click.option(
+    '-n',
+    '--workflow-name',
+    required=False,
+    help="Name of the workflow. Overrides the configuration file workflow_name parameter"
+)
 # @click.argument('extra_context', nargs=-1, callback=validate_extra_context)
-def main(template, output_dir, config, overwrite):
+def main(template, output_dir, config, overwrite, workflow_name):
     if template == 'help':
         click.echo(click.get_current_context().get_help())
         sys.exit(0)
@@ -90,7 +96,8 @@ def main(template, output_dir, config, overwrite):
         if template not in generators:
             raise ClickException(f'Unknown template "{template}"')
         else:
-            generators[template](output_dir, config, not overwrite)
+            base_config = generate.generate_base_config(output_dir, config, workflow_name)
+            generators[template](output_dir, base_config, not overwrite)
 
 
 if __name__ == '__main__':
