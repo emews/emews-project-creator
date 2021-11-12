@@ -56,22 +56,21 @@ with caution.
 ## EMEWS Project Structure ##
 
 Each of the templates will create the default EMEWS project structure
-in `emews_root_directory` beneath the directory specified with the `-o / --output-dir`
-argument, where `emews_root_directory` is specified in the template configuration file.
+in the directory specifiedy by the `-o / --output-dir` argument. 
 EMEWS Creator is designed such that the templates can be run in the same directory. 
 For example, you can begin with the `sweep` template and then create an `eqr` or `eqpy`
-workflow in the same `emews_root_directory`. When multiple workflows are created
-in the same `emews_root_directory`, it's crucial that the `workflow_name`
+workflow in the same output directory. When multiple workflows are created
+in the same  output directory, it's crucial that the `workflow_name`
 configuration parameter is unique to each individual workflow.
 
 
 ### Directories ###
 
-Given an `emews_root_directory` of `swift_project`, the default directory structure 
+Given an `-o / --output-dir` argument of `my_emews_project`, the default directory structure 
 produced by the templates is:
 
 ```
-swift_project/
+my_emews_project/
   data/
   etc/
   ext/
@@ -122,21 +121,18 @@ $ run_{workflow_name}.sh <experiment_name> cfgs/{workflow_name}.cfg
 ## Templates ##
 
 Each workflow template requires a user provided configuration file in yaml format, specified
-using the `-c / --config` argument. The following configuration parameters are
-common to all the templates.
+using the `-c / --config` argument. The following configuration parameters are *REQUIRED*,
+and common to all the templates.
 
-* `emews_root_directory` - the root directory of the EMEWS directory structure. If
-this doesn't exist, it will be created. 
 * `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
 submission, and swift script files. Spaces will be replaced by underscores. **The `workflow_name` should
-be unique among all the workflows under `emews_root_directory`.**
+be unique among all the workflows under output directory.**
 * `model_name` - the name of the model to run during the sweep. This will be used in the model execution
 bash script. Spaces will be replaced by underscores.
 
-The configuration file can also contain entries for running the workflow on an HPC system
+The configuration file can also contain *OPTIONAL* entries for running the workflow on an HPC system
 where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
-See your HPC resource's documentation for details on how to set these. For non-HPC
-runs these can be omitted.
+See your HPC resource's documentation for details on how to set these. 
 
 * `walltime` - the estimated duration of the workflow job. The value must be surrounded by single quotes.
 * `queue` - the queue to run the workflow job on
@@ -153,12 +149,6 @@ Usage:
 ```
 $ python -m emewscreator sweep -o <output_directory> -c <sweep_config.yaml>
 ```
-
-In addition to the common configuration parameters described [above](#templates),
-the configuration file for a sweep requires an additional parameter.
-
-* `upf` - the location of the unrolled parameter file (UPF) containing the collection of model 
-input parameters (one run per line) to sweep over.
 
 A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
@@ -179,7 +169,7 @@ $ python -m emewscreator eqpy -o <output_directory> -c <eqpy_config.yaml>
 ```
 
 In addition to the common configuration parameters described [above](#templates),
-the configuration file for an EQPy workflow requires the following:
+the configuration file for an EQPy workflow _requires_ the following:
 
 * `me_algo_cfg_file_name` - the path to a configuration file for the Python ME algorithm. This
 path will be passed to the Python ME when it is initialized.
@@ -189,15 +179,24 @@ path will be passed to the Python ME when it is initialized.
 This is the name of that file.
 * `model_output_file_ext` - the file extension (e.g., `csv`) of the `model_output_file_name`
 
+
 A sample `eqpy` configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
 
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqpy template will also
-install the EQPy EMEWS Swift-t extension in `ext/EQ-Py`. The extension
-consists of the following files.
+install the EQPy EMEWS Swift-t extension. By default, the extension will be installed in
+in `ext/EQ-Py`. An alternative location can be specified with the _optional_ `eqpy_location`
+configuration parameter.
 
-* `ext/EQ-Py/eqpy.py`
-* `ext/EQ-Py/EQPy.swift`
+* `eqpy_location` - specifies the location of the eqpy extension (defaults to `ext/EQ-Py`)
+
+You can set this to use an existing EQ-Py extension, or if the specified location
+doesn't exist, the extension will be installed there.
+
+The extension consists of the following files.
+
+* `eqpy.py`
+* `EQPy.swift`
 
 These should not be edited by the user.
 
@@ -212,7 +211,7 @@ which then iteratively provides json format input parameters for model
 execution.
 
 *Note*: The EQR extension requires an additional compilation step. Once the template has been run,
-see `{emews_root_directory}/ext/EQ-R/src/README.md` for compilation instructions.
+see `{eqr_location}/src/README.md` for compilation instructions.
 
 Usage:
 
@@ -236,7 +235,15 @@ A sample EQR configuration file can be found [here](https://github.com/emews/eme
 
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqr template will also
-install the source for EQ/R EMEWS Swift-t extension in `ext/EQ-R/src`. The extension needs 
-to be compiled before it can be used. See `ext/EQ-R/src/README.md` for compilation instructions.
+install the source for EQ/R EMEWS Swift-t extension. By default, the extension will be installed 
+in `ext/EQ-R`. An alternative location can be specified with the _optional_ `eqr_location`
+configuration parameter.
+
+* `eqr_location` - specifies the location of the eqr extension (defaults to `ext/EQ-R`)
+
+You can set this to use an existing EQ-R extension, or if the specified location
+doesn't exist, the extension will be installed there. 
+
+The extension needs to be compiled before it can be used. See `{eqr_location}/src/README.md` for compilation instructions.
 
 For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
