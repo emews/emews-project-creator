@@ -58,17 +58,17 @@ The `-w / --overwrite` argument reverses this behavior. When it is
 present, any existing files will be overwritten. This should be used
 with caution. `-n / --workflow-name` can be used to specify the `workflow_name`
 configuration parameter or override the existing value in a workflow template
-comfiguration file. See the [templates](#templates) section for more on the
+configuration file. See the [templates](#templates) section for more on the
 `workflow_name` parameter.
 
 ## EMEWS Project Structure ##
 
 Each of the templates will create the default EMEWS project structure
-in the directory specifiedy by the `-o / --output-dir` argument. 
+in the directory specified by the `-o / --output-dir` argument. 
 EMEWS Creator is designed such that the templates can be run in the same directory. 
 For example, you can begin with the `sweep` template and then create an `eqr` or `eqpy`
 workflow in the same output directory. When multiple workflows are created
-in the same  output directory, it's crucial that the `workflow_name`
+in the same  output directory, it is crucial that the `workflow_name`
 configuration parameter is unique to each individual workflow.
 
 
@@ -96,7 +96,7 @@ The directories are intended to contain the following:
 
  * `data` - date required by the model and algorithm (inputs, etc.).
  * `etc` - additional code used by EMEWS
- * `ext` - Swift/T extensions, including the default emews utility code extension as well as
+ * `ext` - Swift/T extensions, including the default EMEWS utility code extension as well as
  the EQ/R and EQ/Py extensions
  * `python` - Python code (e.g., model exploration algorithms written in Python)
  * `python\test` - tests of the Python code
@@ -135,7 +135,7 @@ and common to all the templates.
 * `workflow_name` - the name of the workflow. This will be used as the file name for the workflow configuration, 
 submission, and swift script files. Spaces will be replaced by underscores. 
 This can also be specified using the `-n / --workflow-name` command line argument.
-**The `workflow_name` should be unique among all the workflows in output directory.** 
+**The `workflow_name` should be unique among all the workflows in the output directory.** 
 * `model_name` - the name of the model to run during the sweep. This will be used in the model execution
 bash script. Spaces will be replaced by underscores.
 
