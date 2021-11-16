@@ -1,5 +1,5 @@
-from emewscreator.cli import main
+from emewscreator.cli import cli
 
 
 if __name__ == '__main__':
-    main(prog_name='emewscreator')
+    cli(prog_name='emewscreator')

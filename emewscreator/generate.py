@@ -27,6 +27,8 @@ DEFAULT_EQPY_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-Py'
 DEFAULT_EQR_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-R'
 OUTPUT_DIR_KEY = 'output_dir'
 
+requirements = {'sweep': ['workflow_name']}
+
 
 def copy_template_to_wd(template: str, template_dir, ):
     os.makedirs(emews_wd, exist_ok=True)
@@ -37,12 +39,15 @@ def copy_template_to_wd(template: str, template_dir, ):
     return template_wd
 
 
-def generate_base_config(emews_root: str, config_file: str, workflow_name: str) -> Dict:
+def generate_base_config(emews_root: str, config_file: str, workflow_name: str, model_name: str) -> Dict:
     """Creates the base shared configuration by reading the yaml config file and
     adding / updating configuration parameters as necessary.
     """
-    with open(config_file) as f_in:
-        config = yaml.load(f_in, Loader=yaml.SafeLoader)
+    if config_file is None:
+        config = {}
+    else:
+        with open(config_file) as f_in:
+            config = yaml.load(f_in, Loader=yaml.SafeLoader)
 
     # User specifies the emews root, but cookiecutter actually
     # resolves the templates into the parent directory of emews root.
@@ -53,6 +58,17 @@ def generate_base_config(emews_root: str, config_file: str, workflow_name: str) 
 
     if workflow_name is not None:
         config['workflow_name'] = workflow_name
+
+    if 'model_name' not in config:
+        # not in config so use cmd line arg regardless of
+        # whether it's the default
+        config['model_name'] = model_name
+    else:
+        # in config so use cmd line arg, but
+        # NOT if it's the default model name
+        if model_name != 'model':
+            config['model_name'] = model_name
+
     return config
 
 
