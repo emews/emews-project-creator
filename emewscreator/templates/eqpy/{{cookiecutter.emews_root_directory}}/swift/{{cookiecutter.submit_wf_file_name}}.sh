@@ -6,7 +6,7 @@
 {% include 'common/submission_r_paths.j2' %}
 
 # EQ/Py location
-EQPY={{cookiecutter.eqpy_location}}
+EQPY={{cookiecutter.eqpy_dir}}
 export PYTHONPATH=$EMEWS_PROJECT_ROOT/python:$EQPY
 
 # TODO: If Python cannot be found or there are "Cannot find 

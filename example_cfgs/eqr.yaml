@@ -1,9 +1,9 @@
 workflow_name: eqr workflow
 model_name: My Model
 
-me_algo_cfg_file_name : data/me_config.R
+me_cfg_file : data/me_config.R
 trials: 2
-me_script : R/me.R
+script_file : R/me.R
 
 model_output_file_name : output
 model_output_file_ext : csv

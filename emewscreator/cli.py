@@ -25,12 +25,13 @@ class NotRequiredIf(click.Option):
                     break
 
             if self.required:
+                option_list = [x.replace('_', '-') for x in self.not_required_if]
                 if len(self.not_required_if) == 1:
-                    missing_msg = 'if option --{} is omitted'.format(self.not_required_if[0])
+                    missing_msg = 'if option "--{}" is omitted'.format(option_list[0])
                 else:
-                    missing_msg = ','.join(['--{}'.format(s) for s in self.not_required_if[:-1]])
-                    missing_msg = 'if any of the options {}, or --{} is omitted'.format(missing_msg,
-                                                                                        self.not_required_if[-1])
+                    missing_msg = ', '.join(['--{}'.format(s) for s in option_list[:-1]])
+                    missing_msg = 'if any of the options "{}, or --{}" are omitted'.format(missing_msg,
+                                                                                           option_list[-1])
                 msg = """option '-c' / '--config' is required {}""".format(missing_msg)
                 raise click.UsageError(msg)
 
@@ -125,7 +126,8 @@ def sweep(obj: TemplateInfo, config, workflow_name):
     '-c',
     '--config',
     type=click.Path(),
-    cls=NotRequiredIf, not_required_if=['workflow_name'],
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'module_name', 'me_cfg_file',
+                                        'model_output_file_name'],
     callback=validate_config,
     help='Path to the template configuration file',
 )
@@ -139,26 +141,78 @@ def sweep(obj: TemplateInfo, config, workflow_name):
     '--module-name',
     help='Python model exploration algorithm module name'
 )
-@click.options(
-    '--module-cfg-file',
-    type=click.Path,
+@click.option(
+    '--me-cfg-file',
+    type=click.Path(),
     help='Configuration file for the model exploration algorithm'
 )
 @click.option(
     '--trials',
     type=click.INT,
-    help='Number of trials / replicates to perform for each model run'
+    help='Number of trials / replicates to perform for each model run. Defaults to 1'
 )
 @click.option(
     '--model-output-file-name',
-    help='Model output base file name, file name only without extension (e.g., "output")'
+    help='Model output base file name, file name only (e.g., "output.csv")'
 )
 @click.option(
-    '--model-output-file-extension',
-    help='Model output base file name extension (e.g., "csv"'
+    '--eqpy-dir',
+    type=click.Path(),
+    help='Directory where the eqpy extension is located. If the extension does not exist at this location it will be installed there. Defaults to {output_dir}/ext/EQ-Py'
 )
 @click.pass_obj
 def eqpy(obj: TemplateInfo, **kwargs):
-    # after making base config, add kwargs to the config
-    # except for workflow_name which is handled in base config
-    pass
+    config = kwargs.pop('config')
+    workflow_name = kwargs.pop('workflow_name')
+    base_config = generate.generate_base_config(obj.out_dir, config, workflow_name, obj.model_name)
+    generate.override_base_config(base_config, kwargs, {'trials': 1})
+    generate.generate_eqpy(obj.out_dir, base_config, not obj.overwrite)
+
+
+# EQR
+@cli.command('eqr', short_help='create an eqr workflow')
+@click.option(
+    '-c',
+    '--config',
+    type=click.Path(),
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'script_file', 'me_cfg_file',
+                                        'model_output_file_name'],
+    callback=validate_config,
+    help='Path to the template configuration file',
+)
+@click.option(
+    '-n',
+    '--workflow-name',
+    required=False,
+    help='Name of the workflow'
+)
+@click.option(
+    '--script-file',
+    help='Path to the R model exploration algorithm'
+)
+@click.option(
+    '--me-cfg-file',
+    type=click.Path(),
+    help='Configuration file for the model exploration algorithm'
+)
+@click.option(
+    '--trials',
+    type=click.INT,
+    help='Number of trials / replicates to perform for each model run',
+)
+@click.option(
+    '--model-output-file-name',
+    help='Model output base file name, file name only (e.g., "output.csv")'
+)
+@click.option(
+    '--eqr-dir',
+    type=click.Path(),
+    help='Directory where the eqr extension is located. If the extension does not exist at this location it will be installed there. Defaults to {output_dir}/ext/EQ-R'
+)
+@click.pass_obj
+def eqr(obj: TemplateInfo, **kwargs):
+    config = kwargs.pop('config')
+    workflow_name = kwargs.pop('workflow_name')
+    base_config = generate.generate_base_config(obj.out_dir, config, workflow_name, obj.model_name)
+    generate.override_base_config(base_config, kwargs, {'trials': 1})
+    generate.generate_eqr(obj.out_dir, base_config, not obj.overwrite)

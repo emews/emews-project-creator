@@ -180,9 +180,9 @@ $ python -m emewscreator eqpy -o <output_directory> -c <eqpy_config.yaml>
 In addition to the common configuration parameters described [above](#templates),
 the configuration file for an EQPy workflow **requires** the following:
 
-* `me_algo_cfg_file_name` - the path to a configuration file for the Python ME algorithm. This
+* `me-cfg-file` - the path to a configuration file for the Python ME algorithm. This
 path will be passed to the Python ME when it is initialized.
-* `me_module` - the Python module implementing the ME algorithm
+* `module_name` - the Python module implementing the ME algorithm
 * `trials` - the number of trials or replicates to perform for each model run
 * `model_output_file_name` - each model run is passed a file path for writing its output.
 This is the name of that file.
@@ -231,7 +231,7 @@ $ python -m emewscreator eqr -o <output_directory> -c <eqr_config.yaml>
 In addition to the common configuration parameters described [above](#templates),
 the configuration file for an EQR workflow **requires** the following:
 
-* `me_algo_cfg_file_name` - the path to a configuration file for the R ME algorithm. This
+* `me-cfg-file` - the path to a configuration file for the R ME algorithm. This
 path will be passed to the R ME when it is initialized.
 * `me_scrpt` - the path to the R script implementing the ME algorithm
 * `trials` - the number of trials or replicates to perform for each model run

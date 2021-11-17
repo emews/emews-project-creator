@@ -72,6 +72,18 @@ def generate_base_config(emews_root: str, config_file: str, workflow_name: str, 
     return config
 
 
+def override_base_config(base_config: Dict, overrides: Dict, defaults: Dict={}):
+    """Overrides the entries in base config with those from overrides, if the
+    value is not None"""
+    for k, v in overrides.items():
+        if v is not None:
+            base_config[k] = v
+
+    for k, v in defaults.items():
+        if k not in base_config:
+            base_config[k] = v
+
+
 def config_to_cc(template_dir: str, base_config: Dict, additional_context: List=[]) -> Dict:
     """Updates a copy of the specified base_config with any additional context and
     writes the config to json as a cookiecutter configuration file.
@@ -137,23 +149,33 @@ def config_for_all(config: Dict):
             config[k] = v
 
 
+def config_mo_file(config: Dict):
+    fname = config['model_output_file_name']
+    fname, ext = os.path.splitext(fname)
+    config['model_output_file_name'] = fname
+    config['model_output_file_ext'] = ext
+
+
 def config_for_eqpy(config: Dict):
     config['eq_call_prefix'] = 'EQPy'
     config['me_output_type'] = 'json'
+    config_mo_file(config)
 
-    if 'eqpy_location' not in config:
-        config['eqpy_location'] = DEFAULT_EQPY_EXT
+    if 'eqpy_dir' not in config:
+        config['eqpy_dir'] = DEFAULT_EQPY_EXT
 
 
 def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
+    config_mo_file(config)
+
     # tell cookiecutter to copy these files, but don't run
     # jinja on them
     config['_copy_without_render'].append('ext/EQ-R/src/*')
 
-    if 'eqr_location' not in config:
-        config['eqr_location'] = DEFAULT_EQR_EXT
+    if 'eqr_dir' not in config:
+        config['eqr_dir'] = DEFAULT_EQR_EXT
 
 
 def generate_sweep(emews_root, base_config, keep_existing):
@@ -197,7 +219,7 @@ def generate_eqpy(emews_root, base_config, keep_existing):
     # copies template to .emews
     eqpy_wd = copy_template_to_wd('eqpy', eqpy_template)
     config = config_to_cc(eqpy_wd, base_config, [config_for_all, config_for_eqpy])
-    eqpy_location = config['eqpy_location']
+    eqpy_location = config['eqpy_dir']
     if eqpy_location == DEFAULT_EQPY_EXT:
         eqpy_location = os.path.join(eqpy_wd, template_emews_root, 'ext/EQ-Py')
         copy_eqpy_code(eqpy_location)
@@ -218,7 +240,7 @@ def generate_eqr(emews_root, base_config, keep_existing):
     eqr_template = os.path.join(templates_dir, 'eqr')
     eqr_wd = copy_template_to_wd('eqr', eqr_template)
     config = config_to_cc(eqr_wd, base_config, [config_for_all, config_for_eqr])
-    eqr_location = config['eqr_location']
+    eqr_location = config['eqr_dir']
     if eqr_location == DEFAULT_EQR_EXT:
         eqr_location = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
         copy_eqr_code(eqr_location)

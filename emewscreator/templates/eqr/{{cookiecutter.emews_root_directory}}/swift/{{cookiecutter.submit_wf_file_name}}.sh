@@ -6,7 +6,7 @@
 {% include 'common/submission_r_paths.j2' %}
 
 # EQ/R location
-EQR={{cookiecutter.eqr_location}}
+EQR={{cookiecutter.eqr_dir}}
 
 # TODO: If Python cannot be found or there are "Cannot find 
 # X package" type errors then these two environment variables

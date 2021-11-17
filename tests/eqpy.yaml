@@ -1,12 +1,11 @@
 workflow_name: eqpy workflow
 model_name: My Model
 
-me_algo_cfg_file_name : data/me_config.json
-me_module : me
+me_cfg_file : data/me_config.json
+module_name : ga
 trials: 2
 
-model_output_file_name : output
-model_output_file_ext : csv
+model_output_file_name : output.csv
 
 walltime : '01:00:00'
 queue : queue
