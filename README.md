@@ -67,10 +67,10 @@ in the `example_cfgs` directory in the EMEWS Creator github repository. See the
 
 Each of the workflow types will create the default EMEWS project structure
 in the directory specified by the `-o, --output-dir` argument. 
-EMEWS Creator is designed such that the workflows can be run in the same directory. 
+EMEWS Creator is designed such that multiple workflows can be run in the same directory. 
 For example, you can begin with the `sweep` and then create an `eqr` or `eqpy`
 workflow in the same output directory. When multiple workflows are created
-in the same  output directory, it is crucial that the `workflow_name`
+in the same output directory, it is crucial that the `workflow_name`
 configuration template argument is unique to each individual workflow. See
 the [Workflow Templates](#workflow_templates) section for more information on the `workflow_name`
 argument.
@@ -131,7 +131,7 @@ $ run_{workflow_name}.sh <experiment_name> cfgs/{workflow_name}.cfg
 
 ## Workflow Templates ##
 
-Each workflow template has its set of own command line arguments, but all have these
+Each workflow template has its own set of command line arguments, but all have the following
 in common:
 
 * `-n, --workflow-name` - the name of the workflow. This will be used as the file name for the workflow configuration, submission, and swift script files. Spaces will be replaced by underscores. 
@@ -141,7 +141,7 @@ the required arguments are specified on the command line
 
 The workflow template configuration file can be used to specify any of a
 workflow template's configuration parameters when those parameters are
-not specified on the command line. This file is in yaml format 
+not specified on the command line. This file is in yaml format.
 Sample configuration files can be found 
 [here](https://github.com/emews/emews-project-creator/tree/master/example_cfgs)
 in the `example_cfgs` directory in the EMEWS Creator github repository. Arguments
@@ -169,7 +169,7 @@ Options:
 
 A sample sweep configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/sweep.yaml).
 
-For a more thorough explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For a more thorough explanation of the sweep workflow, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
 ### EQPy ###
 
@@ -243,7 +243,7 @@ These should not be edited by the user.
 
 A sample `eqpy` configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqpy.yaml).
 
-For a more thorough explanation of Python-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For a more thorough explanation of Python-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
 ### EQR ###
 
@@ -312,7 +312,7 @@ The extension needs to be compiled before it can be used. See `{eqr_dir}/src/REA
 
 A sample EQR configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
 
-For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/)
+For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
 ### HPC Parameters ###
 
