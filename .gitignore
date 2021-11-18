@@ -39,4 +39,6 @@ experiments/
 .vscode
 dist/
 obsolete/
+scratch/
+*.egg-info/
 

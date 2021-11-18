@@ -1,13 +1,18 @@
-workflow_name: eqr workflow
+# --model-name, emewscreator argument
 model_name: My Model
+# --workflow-name, eqr argument
+workflow_name: eqpy workflow
 
+# --me-cfg-file, eqr argument
 me_cfg_file : data/me_config.R
-trials: 2
+# --script-file, eqr argument
 script_file : R/me.R
+# --trials, eqr argument
+trials: 2
+# --model-output-file-name, eqr argument
+model_output_file_name : output.csv
 
-model_output_file_name : output
-model_output_file_ext : csv
-
+# Optional HPC arguments
 walltime : '01:00:00'
 queue : queue
 project : project

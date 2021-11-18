@@ -1,6 +1,9 @@
-workflow_name: sweep workflow
+# --model-name, emewscreator argument
 model_name: My Model
+# --workflow-name, sweep argument
+workflow_name: eqpy workflow
 
+# Option HPC Arguments
 walltime : '24:00:00'
 queue : queue
 project : project
