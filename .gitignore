@@ -38,4 +38,5 @@ experiments/
 
 .vscode
 dist/
+obsolete/
 
