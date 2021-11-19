@@ -316,7 +316,7 @@ For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial
 
 ### HPC Parameters ###
 
-The workflow templates' configuration file
+The workflow templates' configuration file (specified with the `--config` argument)
 can also contain **optional** entries for running the workflow on an HPC system
 where a job is submitted via an HPC scheduler (e.g., the slurm scheduler).
 See your HPC resource's documentation for details on how to set these. 
