@@ -1,7 +1,7 @@
 # --model-name, emewscreator argument
 model_name: My Model
 # --workflow-name, eqr argument
-workflow_name: eqpy workflow
+workflow_name: eqr workflow
 
 # --me-cfg-file, eqr argument
 me_cfg_file : data/me_config.R
