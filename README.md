@@ -118,7 +118,7 @@ in the file names below.
 * `swift/run_{workflow_name}.sh` - a bash script used to launch the workflow
 * `swift/{workflow_name}.swift` - the swift script that implements the workflow.
 * `scripts/run_{model_name}_{workflow_name}.sh` - a bash script used to run the model application.
-* `cfgs/{workflow_name}.cfg` - a configuration file for running the workflow
+* `swift/cfgs/{workflow_name}.cfg` - a configuration file for running the workflow
 
 These files may require some user customization before they can be used. The 
 relevant sections are marked with `TODO`.
