@@ -3,7 +3,7 @@ model_name: My Model
 # --workflow-name, sweep argument
 workflow_name: sweep workflow
 
-# Option HPC Arguments
+# Optional HPC Arguments
 walltime : '24:00:00'
 queue : queue
 project : project
