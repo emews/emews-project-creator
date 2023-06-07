@@ -3,6 +3,7 @@ import shutil
 import yaml
 import json
 import pathlib
+from importlib import resources
 
 from typing import Dict, List
 
@@ -12,7 +13,7 @@ from cookiecutter.main import cookiecutter
 from cookiecutter.vcs import clone
 
 
-this_path = os.path.dirname(os.path.abspath(__file__))
+this_path = resources.files('emewscreator')
 templates_dir = os.path.join(this_path, 'templates')
 j2s_dir = os.path.join(templates_dir, 'common/j2s')
 common_j2s = os.path.join(j2s_dir, 'common')
@@ -24,6 +25,7 @@ emews_wd = os.path.join(str(pathlib.Path.home()), '.emews')
 emews_tag_file = '.CREATED_BY_EC'
 
 DEFAULT_EQPY_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-Py'
+DEFAULT_EQSQL_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-SQL'
 DEFAULT_EQR_EXT = '$EMEWS_PROJECT_ROOT/ext/EQ-R'
 OUTPUT_DIR_KEY = 'output_dir'
 
@@ -72,7 +74,7 @@ def generate_base_config(emews_root: str, config_file: str, workflow_name: str, 
     return config
 
 
-def override_base_config(base_config: Dict, overrides: Dict, defaults: Dict={}):
+def override_base_config(base_config: Dict, overrides: Dict, defaults: Dict = {}):
     """Overrides the entries in base config with those from overrides, if the
     value is not None"""
     for k, v in overrides.items():
@@ -84,7 +86,7 @@ def override_base_config(base_config: Dict, overrides: Dict, defaults: Dict={}):
             base_config[k] = v
 
 
-def config_to_cc(template_dir: str, base_config: Dict, additional_context: List=[]) -> Dict:
+def config_to_cc(template_dir: str, base_config: Dict, additional_context: List = []) -> Dict:
     """Updates a copy of the specified base_config with any additional context and
     writes the config to json as a cookiecutter configuration file.
 
@@ -101,7 +103,7 @@ def config_to_cc(template_dir: str, base_config: Dict, additional_context: List=
     return config
 
 
-def copy_common(proj_dir, j2s: List=[]):
+def copy_common(proj_dir, j2s: List = []):
     proj_common = os.path.join(proj_dir, template_emews_root, 'common')
     os.mkdir(proj_common)
     util.copytree(common_j2s, proj_common)
@@ -165,6 +167,13 @@ def config_for_eqpy(config: Dict):
         config['eqpy_dir'] = DEFAULT_EQPY_EXT
 
 
+def config_for_eqsql(config: Dict):
+    config['me_output_type'] = 'json'
+    config_mo_file(config)
+    config['eqsql_dir'] = DEFAULT_EQSQL_EXT
+    config['eq_call_prefix'] = 'EQSQL'
+
+
 def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
@@ -205,6 +214,13 @@ def copy_eqpy_code(eqpy_location):
     shutil.rmtree(os.path.join(emews_wd, 'EQ-Py'), ignore_errors=True)
 
 
+def copy_eqsql_code(eqsql_location):
+    clone('https://github.com/emews/EQ-SQL.git', clone_to_dir=emews_wd, no_input=True)
+    src = os.path.join(emews_wd, 'EQ-SQL/swift-t/ext')
+    util.copy_files(src, eqsql_location, ['eqsql_swift.py', 'EQSQL.swift'])
+    shutil.rmtree(os.path.join(emews_wd, 'EQ-SQL'), ignore_errors=True)
+
+
 def copy_eqr_code(eqr_location):
     clone('https://github.com/emews/EQ-R.git', clone_to_dir=emews_wd, no_input=True)
     src = os.path.join(emews_wd, 'EQ-R/src')
@@ -233,6 +249,24 @@ def generate_eqpy(emews_root, base_config, keep_existing):
     # skip_if_file_exists controls where existing files get overwritten
     output_dir = config[OUTPUT_DIR_KEY]
     cookiecutter(eqpy_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True,
+                 no_input=True)
+
+
+def generate_eqsql(emews_root, base_config, keep_existing):
+    eqsql_template = os.path.join(templates_dir, 'eqsql')
+    eqsql_wd = copy_template_to_wd('eqsql', eqsql_template)
+    config = config_to_cc(eqsql_wd, base_config, [config_for_all, config_for_eqsql])
+    eqsql_location = config['eqsql_dir']
+    # always use the default location
+    eqsql_location = os.path.join(eqsql_wd, template_emews_root, 'ext/EQ-SQL')
+    copy_eqsql_code(eqsql_location)
+    rename_gitignore(eqsql_location)
+    copy_common(eqsql_wd, ['eq', 'eqsql'])
+    check_gen_emews(emews_root, base_config, keep_existing)
+    # overwrite_if_exists prevents errors if the directory structure already exists
+    # skip_if_file_exists controls where existing files get overwritten
+    output_dir = config[OUTPUT_DIR_KEY]
+    cookiecutter(eqsql_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True,
                  no_input=True)
 
 

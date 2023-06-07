@@ -1,6 +1,8 @@
 import click
 import sys
 import os
+import colorama
+from eqsql import db_tools
 
 from emewscreator import __version__
 
@@ -216,3 +218,78 @@ def eqr(obj: TemplateInfo, **kwargs):
     base_config = generate.generate_base_config(obj.out_dir, config, workflow_name, obj.model_name)
     generate.override_base_config(base_config, kwargs, {'trials': 1})
     generate.generate_eqr(obj.out_dir, base_config, not obj.overwrite)
+
+
+@cli.command('init_db', short_help='initialize an eqsql database')
+@click.option(
+    '-d',
+    '--db-path',
+    required=True,
+    type=click.Path(),
+    help='Database directory path. The database will be created in this directory.'
+)
+@click.option(
+    '-p',
+    '--port',
+    required=False,
+    type=click.INT,
+    help="The database port, if any."
+)
+@click.pass_obj
+def init_db(obj: TemplateInfo, **kwargs):
+    colorama.init(autoreset=True)
+    print(colorama.Fore.GREEN + 'Initializing Database')
+    db_path = kwargs['db_path']
+    result = db_tools.init_eqsql_db(db_path, db_port=kwargs['port'])
+    if result is None:
+        print(colorama.Fore.RED + 'Database Initialization Failed')
+    else:
+        print(colorama.Fore.GREEN + 'Database Initialization Succeeded')
+        print(colorama.Fore.GREEN + f'DB_PATH: {result[0]}\nDB_USER: {result[1]}\nDB_NAME: {result[2]}')
+        if kwargs['port'] is not None:
+            print(f'DB_PORT: {result[3]}')
+
+
+# EQSQL
+@cli.command('eqsql', short_help='create an eqsql workflow')
+@click.option(
+    '-c',
+    '--config',
+    type=click.Path(),
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'module_name', 'me_cfg_file',
+                                        'model_output_file_name'],
+    callback=validate_config,
+    help='Path to the template configuration file',
+)
+@click.option(
+    '-n',
+    '--workflow-name',
+    required=False,
+    help='Name of the workflow'
+)
+@click.option(
+    '--module-name',
+    help='Python model exploration algorithm module name'
+)
+@click.option(
+    '--me-cfg-file',
+    type=click.Path(),
+    help='Configuration file for the model exploration algorithm'
+)
+@click.option(
+    '--trials',
+    type=click.INT,
+    help='Number of trials / replicates to perform for each model run. Defaults to 1'
+)
+@click.option(
+    '--model-output-file-name',
+    help='Model output base file name, file name only (e.g., "output.csv")'
+)
+@click.pass_obj
+def eqsql(obj: TemplateInfo, **kwargs):
+    config = kwargs.pop('config')
+    workflow_name = kwargs.pop('workflow_name')
+    base_config = generate.generate_base_config(obj.out_dir, config, workflow_name, obj.model_name)
+    # trials:1 - is default if doesn't exist
+    generate.override_base_config(base_config, kwargs, {'trials': 1})
+    generate.generate_eqsql(obj.out_dir, base_config, not obj.overwrite)
