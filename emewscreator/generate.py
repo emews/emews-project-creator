@@ -161,6 +161,7 @@ def config_mo_file(config: Dict):
 def config_for_eqpy(config: Dict):
     config['eq_call_prefix'] = 'EQPy'
     config['me_output_type'] = 'json'
+    config['check_directory'] = 'y'
     config_mo_file(config)
 
     if 'eqpy_dir' not in config:
@@ -169,12 +170,14 @@ def config_for_eqpy(config: Dict):
 
 def config_for_eqsql(config: Dict):
     config['me_output_type'] = 'json'
+    config['check_directory'] = 'n'
     config_mo_file(config)
     config['eqsql_dir'] = DEFAULT_EQSQL_EXT
     config['eq_call_prefix'] = 'EQSQL'
 
 
 def config_for_eqr(config: Dict):
+    config['check_directory'] = 'y'
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
     config_mo_file(config)

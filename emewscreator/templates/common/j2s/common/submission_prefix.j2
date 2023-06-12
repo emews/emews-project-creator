@@ -16,8 +16,12 @@ source "${EMEWS_PROJECT_ROOT}/etc/emews_utils.sh"
 
 export EXPID=$1
 export TURBINE_OUTPUT=$EMEWS_PROJECT_ROOT/experiments/$EXPID
-check_directory_exists
 
+{%- if cookiecutter.check_directory == 'y' %}
+check_directory_exists
+{% else %}
+# check_directory_exists
+{% endif %}
 CFG_FILE=$2
 source $CFG_FILE
 
