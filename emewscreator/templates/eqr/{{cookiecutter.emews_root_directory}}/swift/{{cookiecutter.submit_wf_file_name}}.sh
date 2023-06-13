@@ -17,6 +17,8 @@ EQR={{cookiecutter.eqr_dir}}
 export TURBINE_RESIDENT_WORK_WORKERS=1
 export RESIDENT_WORK_RANKS=$(( PROCS - 2 ))
 
+{% include 'common/machine.j2' %}
+
 EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
 
 # Copies ME config file to experiment directory
