@@ -14,22 +14,22 @@ int BATCH_THRESHOLD = string2int(argv("batch_threshold", "1"));
 string WORKER_POOL_ID = argv("worker_pool_id", "default");
 
 file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}_{{cookiecutter.wf_file_name}}.sh");
-int n_trials = toint(argv("trials", "1"));
+int n_trials = string2int(argv("trials", "1"));
 
 {% include 'common/calc_model_result_placeholder.j2' %}
 
 {% include 'common/calc_agg_model_result_placeholder.j2' %}
 
-// app function used to run the model
-app (file out, file err) run_model(file shfile, string param_line, string output_file, int trial, string instance_dir) {
-    "bash" shfile param_line output_file trial emews_root instance_dir @stdout=out @stderr=err;
+// app function used to run the task
+app (file out, file err) run_task_app(file shfile, string task_payload, string output_file, int trial, string instance_dir) {
+    "bash" shfile task_payload output_file trial emews_root instance_dir @stdout=out @stderr=err;
 }
 
 (float result) run_obj(string task_payload, int trial, string instance_dir, string instance_id) {
     file out <instance_dir + "/" + instance_id+"_out.txt">;
     file err <instance_dir + "/" + instance_id+"_err.txt">;
-    string output_file = "%s/{{cookiecutter.model_output_file_name}}_%s.{{cookiecutter.model_output_file_ext}}" % (instance_dir, instance_id);
-    (out,err) = run_model(model_sh, param_line, output_file,  trial, instance_dir) =>
+    string output_file = "%s/{{cookiecutter.model_output_file_name}}_%s{{cookiecutter.model_output_file_ext}}" % (instance_dir, instance_id);
+    (out,err) = run_task_app(model_sh, task_payload, output_file,  trial, instance_dir) =>
     result = get_result(output_file);
 }
 
@@ -40,13 +40,14 @@ app (file out, file err) run_model(file shfile, string param_line, string output
     mkdir(instance) => {
         foreach i in [0:n_trials-1:1] {
             int trial = i + 1;
-            string instance_id = "i_%i" % (tasK_id, trial);
+            string instance_id = "i_%i" % (task_id, trial);
             results[i] = run_obj(task_payload, trial, instance, instance_id);
         }
     }
 
-    obj_result = float2string(get_aggregate_result(results)) =>
-    // TODO uncomment to delete the instance directory if
+    obj_result = float2string(get_aggregate_result(results)); // =>
+    // TODO: delete the ";" above, uncomment the ""=>"" above and 
+    // and the rm_dir below to delete the instance directory if
     // it is not needed after the result have been computed.
     // rm_dir(instance);
 }
@@ -74,6 +75,9 @@ run(message msgs[]) {
           v = propagate() =>
           c = false;
       } else {
+        // sleep to give time for Python etc.
+        // to flush messages
+        sleep(5);
         printf("loop.swift: got %s: exiting!", msgs[0].payload) =>
         v = propagate() =>
         c = false;

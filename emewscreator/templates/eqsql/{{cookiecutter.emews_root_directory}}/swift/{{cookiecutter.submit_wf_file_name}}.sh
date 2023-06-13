@@ -16,10 +16,22 @@ export PYTHONPATH=$EMEWS_PROJECT_ROOT/python:$EQSQL
 
 # Resident task workers and ranks
 export TURBINE_RESIDENT_WORK_WORKERS=1
-export RESIDENT_WORK_RANKS=$(( PROCS - 2 ))
+export RESIDENT_WORK_RANK=$(( PROCS - 2 ))
+
+# TODO: Set MACHINE to your schedule type (e.g. pbs, slurm, cobalt etc.),
+# or empty for an immediate non-queued unscheduled run
+MACHINE=""
+
+if [ -n "$MACHINE" ]; then
+  MACHINE="-m $MACHINE"
+else
+  echo "Logging output to $TURBINE_OUTPUT/output.txt"
+  # Redirect stdout and stderr to output.txt
+  # if running without a scheduler.
+  exec &> "$TURBINE_OUTPUT/output.txt"
+fi
 
 EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
-
 
 export DB_HOST=$CFG_DB_HOST
 export DB_USER=$CFG_DB_USER

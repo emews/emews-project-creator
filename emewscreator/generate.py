@@ -138,6 +138,7 @@ def config_for_all(config: Dict):
     workflow_fname = util.clean_filename(config['workflow_name'])
     config['cfg_file_name'] = workflow_fname.lower()
     config['wf_file_name'] = workflow_fname.lower()
+    config['check_directory'] = 'y'
     config['submit_wf_file_name'] = f'run_{workflow_fname}'
     clean_model_name = util.clean_filename(config['model_name']).lower()
     config['model_launcher_name'] = f'run_{clean_model_name}'
@@ -161,7 +162,6 @@ def config_mo_file(config: Dict):
 def config_for_eqpy(config: Dict):
     config['eq_call_prefix'] = 'EQPy'
     config['me_output_type'] = 'json'
-    config['check_directory'] = 'y'
     config_mo_file(config)
 
     if 'eqpy_dir' not in config:
@@ -177,7 +177,6 @@ def config_for_eqsql(config: Dict):
 
 
 def config_for_eqr(config: Dict):
-    config['check_directory'] = 'y'
     config['eq_call_prefix'] = 'EQR'
     config['me_output_type'] = 'json'
     config_mo_file(config)
