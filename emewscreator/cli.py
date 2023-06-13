@@ -2,7 +2,6 @@ import click
 import sys
 import os
 import colorama
-from eqsql import db_tools
 
 from emewscreator import __version__
 
@@ -238,6 +237,7 @@ def eqr(obj: TemplateInfo, **kwargs):
 @click.pass_obj
 def init_db(obj: TemplateInfo, **kwargs):
     colorama.init(autoreset=True)
+    from eqsql import db_tools
     print(colorama.Fore.GREEN + 'Initializing Database')
     db_path = kwargs['db_path']
     result = db_tools.init_eqsql_db(db_path, db_port=kwargs['port'])
@@ -256,25 +256,26 @@ def init_db(obj: TemplateInfo, **kwargs):
     '-c',
     '--config',
     type=click.Path(),
-    cls=NotRequiredIf, not_required_if=['workflow_name', 'module_name', 'me_cfg_file',
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'trials', 'pool_id', 'task_type',
                                         'model_output_file_name'],
     callback=validate_config,
     help='Path to the template configuration file',
+)
+@click.option(
+    '--pool-id',
+    type=click.STRING,
+    help='The name of the task worker pool'
+)
+@click.option(
+    '--task-type',
+    type=click.INT,
+    help="The task type id for the tasks consumed by the worker pool"
 )
 @click.option(
     '-n',
     '--workflow-name',
     required=False,
     help='Name of the workflow'
-)
-@click.option(
-    '--module-name',
-    help='Python model exploration algorithm module name'
-)
-@click.option(
-    '--me-cfg-file',
-    type=click.Path(),
-    help='Configuration file for the model exploration algorithm'
 )
 @click.option(
     '--trials',
