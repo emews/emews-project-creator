@@ -45,15 +45,15 @@ MODEL_CMD=""
 # surrounded by quotes and separated by spaces. For example,
 # arg_array=("$EMEWS_ROOT/python/my_model.py" "$PARAM_LINE")
 arg_array=("arg1" "arg2" "arg3")
-COMMAND="$MODEL_CMD ${arg_array[@]}"
 
 # Turn bash error checking off. This is
 # required to properly handle the model execution
 # return values and the optional timeout.
 set +e
-echo "Running $COMMAND"
+echo "Running $MODEL_CMD ${arg_array[@]}"
 
-$TIMEOUT_CMD $COMMAND
+$TIMEOUT_CMD "$MODEL_CMD" "${arg_array[@]}"
+
 # $? is the exit status of the most recently executed command (i.e the
 # line above)
 RES=$?
