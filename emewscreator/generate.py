@@ -97,6 +97,12 @@ def config_to_cc(template_dir: str, base_config: Dict, additional_context: List 
     for ctx in additional_context:
         ctx(config)
 
+    parent_dir = os.getcwd()
+    if len(config[OUTPUT_DIR_KEY]) > 0:
+        parent_dir = config[OUTPUT_DIR_KEY]
+    abs_output_path = os.path.abspath(os.path.join(parent_dir, config["emews_root_directory"]))
+    config['abs_output_path'] = abs_output_path
+
     with open(os.path.join(template_dir, 'cookiecutter.json'), 'w') as f_out:
         json.dump(config, f_out, indent=4)
 
@@ -264,10 +270,21 @@ def generate_eqsql(emews_root, base_config, keep_existing):
     copy_eqsql_code(eqsql_location)
     rename_gitignore(eqsql_location)
     copy_common(eqsql_wd, ['eq', 'eqsql'])
+    if config['me_type'] == 'python':
+        lang_dir = os.path.join(eqsql_wd, template_emews_root, 'R')
+        shutil.rmtree(lang_dir)
+    elif config['me_type'] == 'R':
+        lang_dir = os.path.join(eqsql_wd, template_emews_root, 'python')
+        shutil.rmtree(lang_dir)
+    else:
+        lang_dir = os.path.join(eqsql_wd, template_emews_root, 'R')
+        shutil.rmtree(lang_dir)
+        lang_dir = os.path.join(eqsql_wd, template_emews_root, 'python')
+        shutil.rmtree(lang_dir)
     check_gen_emews(emews_root, base_config, keep_existing)
+    output_dir = config[OUTPUT_DIR_KEY]
     # overwrite_if_exists prevents errors if the directory structure already exists
     # skip_if_file_exists controls where existing files get overwritten
-    output_dir = config[OUTPUT_DIR_KEY]
     cookiecutter(eqsql_wd, output_dir=output_dir, skip_if_file_exists=keep_existing, overwrite_if_exists=True,
                  no_input=True)
 

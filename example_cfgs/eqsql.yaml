@@ -11,6 +11,14 @@ trials: 2
 # --model-output-file-name, eqpy argument
 model_output_file_name : output.csv
 
+# R, python, None
+me_type: python
+# omit file extension
+me_file_name: algo
+me_cfg_file_name: algo_cfg
+
+eqsql_db_path: /home/nick/tmp/db
+
 # Optional HPC arguments
 walltime : '01:00:00'
 queue : queue
