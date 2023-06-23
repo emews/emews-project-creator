@@ -12,7 +12,7 @@ trials: 2
 model_output_file_name : output.csv
 
 # R, python, None
-me_type: python
+me_language: python
 # omit file extension
 me_file_name: algo
 me_cfg_file_name: algo_cfg
