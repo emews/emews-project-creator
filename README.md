@@ -43,10 +43,11 @@ Options:
 Commands:
   eqpy   create an eqpy workflow
   eqr    create an eqr workflow
+  eqsql    create an eqsql workflow
+  init_db  initialize an eqsql database
   sweep  create a sweep workflow
 ```
-Each of the commands creates a particular type of workflow: a sweep, an eqpy-based workflow, 
-or an eqr-based workflow. Each of the commands has its own arguments specific to that
+The `sweep`, `eqpy`, `eqr`, and `eqsql` commands create a particular type of workflow: a sweep, an eqpy-based workflow, an eqr-based workflow, or an eqsql-based workflow. Each of the commands has its own arguments specific to that
 workflow type. Those arguments will be covered in the [Workflow Templates](#workflow_templates) section
 below.
 
@@ -63,6 +64,9 @@ These values can also be supplied in a yaml format configuration file. Sample
 configuration files can be found [here](https://github.com/emews/emews-project-creator/tree/master/example_cfgs)
 in the `example_cfgs` directory in the EMEWS Creator github repository. See the
 [Workflow Templates](#workflow_templates) section for more information.
+
+The final command `init_db` creates and initializes the postgresql database required for
+running an esql workflow. Its arguments will also be covered in the [Workflow Templates](#workflow_templates) section below. When executing the `init_db` command, no arguments to `emewscreator` are required.
 ## EMEWS Project Structure ##
 
 Each of the workflow types will create the default EMEWS project structure
@@ -313,6 +317,96 @@ The extension needs to be compiled before it can be used. See `{eqr_dir}/src/REA
 A sample EQR configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
 
 For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
+
+### INIT DB###
+
+The `init_db` command creates the EQSQL database in a user specified directory. It assumes that the postgresql
+binaries are availble in the user PATH, and that the eqsql package has been installed. The database name will
+default to `EQ_SQL`, and the database user to `eqsql_user`. Database log messages will be written to
+a `db.log` file in the database directory.
+
+Usage:
+
+```
+emewscreator init_db -h
+Usage: emewscreator init_db [OPTIONS]
+
+Options:
+  -d, --db-path PATH  Database directory path. The database will be created in
+                      this directory.  [required]
+  -p, --port INTEGER  The database port, if any.
+  -h, --help          Show this message and exit.
+```
+
+`init_db` takes the following arguments:
+
+* `--db-path` - the directory in which to create the database. This must not already exist,
+and will be created by the running template.
+* `--port` - an optional port number for the database to listen for connections on. This is not
+required for a local database.
+
+### EQSQL ###
+
+<ADD TEXT THAT THIS IS MORE FOCUSED ON LOCAL RUN -- DB IS ON THE SAME MACHINE AS 
+WORKER POOL AND ME>
+
+The EQSQL workflow template creates a workflow that submits tasks (such as
+application runs) to a queue implemented in a database. Worker pools pop tasks 
+off this queue for evaluation, and push the results back to a database input queue. 
+The tasks can be provided by a Python or R language model exploration (ME) algorithm. 
+
+Usage:
+
+```
+$emewscreator eqsql -h
+Usage: emewscreator eqsql [OPTIONS]
+
+Options:
+  -c, --config PATH              Path to the template configuration file.
+                                 [required if any command line arguments are
+                                 missing]
+  --pool-id TEXT                 The name of the task worker pool.
+  --task-type INTEGER            The task type id for the tasks consumed by
+                                 the worker pool.
+  -n, --workflow-name TEXT       Name of the workflow.
+  --trials INTEGER               Number of trials / replicates to perform for
+                                 each model run. Defaults to 1.
+  --model-output-file-name TEXT  Model output base file name, file name only
+                                 (e.g., "output.csv").
+  --me-language [python|R|None]  Model exploration algorithm programming
+                                 language: Python, R, or None.
+  --me-file-name TEXT            The name of the model exploration algorithm
+                                 template file to generate. Omit the extension
+                                 (e.g., "algo", not "algo.py").
+  --me-cfg-file-name TEXT        The name of the model exploration algorithm
+                                 configuration file.
+  --esql-db-path PATH            The path to the eqsql database.
+  -h, --help                     Show this message and exit.
+```
+
+In addition to the common configuration arguments described [above](#workflow_templates),
+the eqsql template also has the following:
+
+* `--pool-id` - a unique identifier for the swift-t worker pool created by the template.
+* `--task-type` - an integer identifying the type of task the worker pool will consume. 
+* `--trials` - the number of trials or replicates to perform for each task evalution. Defaults to 1.
+* `--model-output-file-name` - each task evaulation is passed a file path for writing its output.
+This is the name of that file.
+* `--me-language` - the ME programming language (R, Python, None). The template will create an example ME written
+in this language. If the value is `None`, then no ME example will be created.
+* `--me-cfg-file-name` - the name of the yaml format configuration file that gets passed to the
+example ME to configure it.
+* `--esql-db-path` - the path to the eqsql database. This is used in the example ME to start
+the database.
+
+A sample `eqsql` configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqsql.yaml).
+
+The swift file created by the `eqsql` template is a worker pool that polls the database
+for tasks of the specified type to evaluate. The results of those task evaluations are
+pushed back to the database together with the pool id. The example ME contains example
+code for submitting tasks to the database and working with the completed tasks.
+
+For a more thorough explanation of EQSQL-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
 ### HPC Parameters ###
 
