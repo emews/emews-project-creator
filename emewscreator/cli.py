@@ -257,34 +257,53 @@ def init_db(obj: TemplateInfo, **kwargs):
     '--config',
     type=click.Path(),
     cls=NotRequiredIf, not_required_if=['workflow_name', 'trials', 'pool_id', 'task_type',
-                                        'model_output_file_name'],
+                                        'model_output_file_name', 'me_language', 'me_file_name',
+                                        'me_cfg_file_name', 'eqsql_db_path'],
     callback=validate_config,
-    help='Path to the template configuration file',
+    help='Path to the template configuration file.',
 )
 @click.option(
     '--pool-id',
     type=click.STRING,
-    help='The name of the task worker pool'
+    help='The name of the task worker pool.'
 )
 @click.option(
     '--task-type',
     type=click.INT,
-    help="The task type id for the tasks consumed by the worker pool"
+    help="The task type id for the tasks consumed by the worker pool."
 )
 @click.option(
     '-n',
     '--workflow-name',
     required=False,
-    help='Name of the workflow'
+    help='Name of the workflow.'
 )
 @click.option(
     '--trials',
     type=click.INT,
-    help='Number of trials / replicates to perform for each model run. Defaults to 1'
+    help='Number of trials / replicates to perform for each model run. Defaults to 1.'
 )
 @click.option(
     '--model-output-file-name',
-    help='Model output base file name, file name only (e.g., "output.csv")'
+    help='Model output base file name, file name only (e.g., "output.csv").'
+)
+@click.option(
+    '--me-language',
+    type=click.Choice(['python', 'R', 'None'], case_sensitive=False),
+    help='Model exploration algorithm programming language: Python, R, or None.'
+)
+@click.option(
+    '--me-file-name',
+    help='The name of the model exploration algorithm template file to generate. Omit the extension (e.g., "algo", not "algo.py").'
+)
+@click.option(
+    '--me-cfg-file-name',
+    help='The name of the model exploration algorithm configuration file.'
+)
+@click.option(
+    '--esql-db-path',
+    type=click.Path(),
+    help='The path to the eqsql database.'
 )
 @click.pass_obj
 def eqsql(obj: TemplateInfo, **kwargs):
