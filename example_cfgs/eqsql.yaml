@@ -1,7 +1,7 @@
 # --model-name, emewscreator argument
 model_name: My Model
 # --workflow-name, eqpy argument
-workflow_name: eqsql workflow
+workflow_name: eqsql
 
 pool_id: default
 task_type: 0

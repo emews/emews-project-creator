@@ -181,6 +181,11 @@ def config_for_eqsql(config: Dict):
     config['eqsql_dir'] = DEFAULT_EQSQL_EXT
     config['eq_call_prefix'] = 'EQSQL'
 
+    config['wf_file_name'] = f"{config['wf_file_name']}_worker_pool"
+    config['check_directory'] = 'y'
+    config['submit_wf_file_name'] = f"run_{config['wf_file_name']}"
+    config['cfg_file_name'] = f"{config['cfg_file_name']}_worker_pool"
+
 
 def config_for_eqr(config: Dict):
     config['eq_call_prefix'] = 'EQR'
