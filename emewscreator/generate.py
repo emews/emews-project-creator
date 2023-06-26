@@ -270,7 +270,7 @@ def generate_eqsql(emews_root, base_config, keep_existing):
     copy_eqsql_code(eqsql_location)
     rename_gitignore(eqsql_location)
     copy_common(eqsql_wd, ['eq', 'eqsql'])
-    me_lang = config['me_language'].tolower()
+    me_lang = config['me_language'].lower()
     if me_lang == 'python':
         lang_dir = os.path.join(eqsql_wd, template_emews_root, 'R')
         shutil.rmtree(lang_dir)
