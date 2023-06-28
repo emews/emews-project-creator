@@ -9,6 +9,8 @@ swift-t -n $PROCS $MACHINE -p -I ${{cookiecutter.eq_call_prefix | upper}} -r ${{
     -e DB_HOST \
     -e DB_USER \
     -e DB_PORT \
+    -e DB_NAME \
+    -e EQ_DB_RETRY_THRESHOLD \
     -e PYTHONPATH \
     -e RESIDENT_WORK_RANK \
     $EMEWS_PROJECT_ROOT/swift/$SWIFT_FILE \

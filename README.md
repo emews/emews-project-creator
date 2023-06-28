@@ -318,7 +318,7 @@ A sample EQR configuration file can be found [here](https://github.com/emews/eme
 
 For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
 
-### INIT DB###
+### INIT DB ###
 
 The `init_db` command creates the EQSQL database in a user specified directory. It assumes that the postgresql
 binaries are availble in the user PATH, and that the eqsql package has been installed. The database name will

@@ -1,7 +1,5 @@
 import argparse
 import yaml
-import json
-import random
 from typing import Dict
 
 from eqsql import eq, worker_pool, db_tools
@@ -16,13 +14,20 @@ def run(exp_id: str, params: Dict):
         db_tools.start_db(params['db_path'])
         db_started = True
 
+        # start task queue
+        task_queue = eq.init_task_queue(params['db_host'], params['db_user'],
+                                        port=None, db_name=params['db_name'])
+
+        # check if the input and output queues are empty,
+        # if not, then exit with a warning.
+        if not task_queue.are_queues_empty():
+            print("WARNING: db input / output queues are not empty. Aborting run", flush=True)
+            return
+
         # start worker pool
         pool_params = worker_pool.cfg_file_to_dict(params['pool_cfg_file'])
         pool = worker_pool.start_local_pool(params['worker_pool_id'], params['pool_launch_script'],
                                             exp_id, pool_params)
-        # start task queue
-        task_queue = eq.init_task_queue(params['db_host'], params['db_user'],
-                                        port=None, db_name=params['db_name'])
         task_type = params['task_type']
         fts = []
 

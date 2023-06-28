@@ -13,7 +13,7 @@ int BATCH_SIZE = string2int(argv("batch_size"));
 int BATCH_THRESHOLD = string2int(argv("batch_threshold", "1"));
 string WORKER_POOL_ID = argv("worker_pool_id", "default");
 
-file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}_{{cookiecutter.wf_file_name}}.sh");
+file model_sh = input(emews_root+"/scripts/{{cookiecutter.model_launcher_name}}.sh");
 int n_trials = string2int(argv("trials", "1"));
 
 {% include 'common/calc_model_result_placeholder.j2' %}
