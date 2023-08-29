@@ -246,8 +246,9 @@ def init_db(obj: TemplateInfo, **kwargs):
     else:
         print(colorama.Fore.GREEN + 'Database Initialization Succeeded')
         print(colorama.Fore.GREEN + f'DB_PATH: {result[0]}\nDB_USER: {result[1]}\nDB_NAME: {result[2]}')
+        print(colorama.Fore.GREEN + f'DB_HOST: {result[3]}')
         if kwargs['port'] is not None:
-            print(f'DB_PORT: {result[3]}')
+            print(colorama.Fore.GREEN + f'DB_PORT: {result[4]}')
 
 
 # EQSQL
