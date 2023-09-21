@@ -347,9 +347,6 @@ required for a local database.
 
 ### EQSQL ###
 
-<ADD TEXT THAT THIS IS MORE FOCUSED ON LOCAL RUN -- DB IS ON THE SAME MACHINE AS 
-WORKER POOL AND ME>
-
 The EQSQL workflow template creates a workflow that submits tasks (such as
 application runs) to a queue implemented in a database. Worker pools pop tasks 
 off this queue for evaluation, and push the results back to a database input queue. 
