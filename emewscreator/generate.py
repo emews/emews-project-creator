@@ -12,9 +12,15 @@ from . import util
 from cookiecutter.main import cookiecutter
 from cookiecutter.vcs import clone
 
+# files doesn't exist in 3.7 and 3.8
+try:
+    from importlib.resources import files
+    this_path = files('emewscreator')
+    templates_dir = os.path.join(this_path, 'templates')
+except Exception:
+    with resources.path('emewscreator', 'templates') as templates_path:
+        templates_dir = str(templates_path)
 
-this_path = resources.files('emewscreator')
-templates_dir = os.path.join(this_path, 'templates')
 j2s_dir = os.path.join(templates_dir, 'common/j2s')
 common_j2s = os.path.join(j2s_dir, 'common')
 common_hooks = os.path.join(templates_dir, 'common/hooks')
