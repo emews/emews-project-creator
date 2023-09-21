@@ -1,6 +1,11 @@
 [build-system]
 requires = [
     "setuptools>=42",
-    "wheel"
+    "wheel",
+    "pyyaml",
+    "click",
+    "colorama",
+    "cookiecutter",
+    "eqsql"
 ]
 build-backend = "setuptools.build_meta"
