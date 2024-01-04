@@ -59,8 +59,8 @@ $TIMEOUT_CMD "$MODEL_CMD" "${arg_array[@]}"
 RES=$?
 if [ "$RES" -ne 0 ]; then
 	if [ "$RES" == 124 ]; then
-    echo "---> Timeout error in $COMMAND"
+    echo "---> Timeout error in $MODEL_CMD ${arg_array[@]}"
   else
-	   echo "---> Error in $COMMAND"
+	   echo "---> Error in $MODEL_CMD ${arg_array[@]}"
   fi
 fi

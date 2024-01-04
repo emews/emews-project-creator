@@ -233,8 +233,8 @@ def copy_eqpy_code(eqpy_location):
     shutil.rmtree(os.path.join(emews_wd, 'EQ-Py'), ignore_errors=True)
 
 
-def copy_eqsql_code(eqsql_location):
-    clone('https://github.com/emews/EQ-SQL.git', clone_to_dir=emews_wd, no_input=True)
+def copy_eqsql_code(eqsql_location, branch=None):
+    clone('https://github.com/emews/EQ-SQL.git', checkout=branch, clone_to_dir=emews_wd, no_input=True)
     src = os.path.join(emews_wd, 'EQ-SQL/swift-t/ext')
     util.copy_files(src, eqsql_location, ['eqsql_swift.py', 'EQSQL.swift'])
     shutil.rmtree(os.path.join(emews_wd, 'EQ-SQL'), ignore_errors=True)
@@ -278,7 +278,7 @@ def generate_eqsql(emews_root, base_config, keep_existing):
     eqsql_location = config['eqsql_dir']
     # always use the default location
     eqsql_location = os.path.join(eqsql_wd, template_emews_root, 'ext/EQ-SQL')
-    copy_eqsql_code(eqsql_location)
+    copy_eqsql_code(eqsql_location, base_config['eqsql_branch'])
     rename_gitignore(eqsql_location)
     copy_common(eqsql_wd, ['eq', 'eqsql'])
     me_lang = config['me_language'].lower()

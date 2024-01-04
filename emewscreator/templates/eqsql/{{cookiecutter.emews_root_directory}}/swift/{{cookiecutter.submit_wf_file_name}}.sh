@@ -38,7 +38,7 @@ MACHINE=""
 if [ -n "$MACHINE" ]; then
   MACHINE="-m $MACHINE"
 else
-  echo "Logging output to $TURBINE_OUTPUT/output.txt"
+  echo "Logging output and errors to $TURBINE_OUTPUT/output.txt"
   # Redirect stdout and stderr to output.txt
   # if running without a scheduler.
   exec &> "$TURBINE_OUTPUT/output.txt"

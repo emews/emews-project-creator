@@ -306,11 +306,16 @@ def init_db(obj: TemplateInfo, **kwargs):
     type=click.Path(),
     help='The path to the eqsql database.'
 )
+@click.option(
+    '--eqsql-branch',
+    required=False,
+)
 @click.pass_obj
 def eqsql(obj: TemplateInfo, **kwargs):
     config = kwargs.pop('config')
     workflow_name = kwargs.pop('workflow_name')
     base_config = generate.generate_base_config(obj.out_dir, config, workflow_name, obj.model_name)
+    base_config['eqsql_branch'] = kwargs.pop('eqsql_branch') if 'eqsql_branch' in kwargs else None
     # trials:1 - is default if doesn't exist
     generate.override_base_config(base_config, kwargs, {'trials': 1})
     generate.generate_eqsql(obj.out_dir, base_config, not obj.overwrite)

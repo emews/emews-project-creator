@@ -40,7 +40,7 @@ app (file out, file err) run_task_app(file shfile, string task_payload, string o
     mkdir(instance) => {
         foreach i in [0:n_trials-1:1] {
             int trial = i + 1;
-            string instance_id = "i_%i" % (task_id, trial);
+            string instance_id = "%i_%i" % (task_id, trial);
             results[i] = run_obj(task_payload, trial, instance, instance_id);
         }
     }

@@ -2,7 +2,8 @@ import argparse
 import yaml
 from typing import Dict
 
-from eqsql import eq, worker_pool, db_tools
+from eqsql import worker_pool, db_tools
+from eqsql.task_queues import local_queue
 
 
 def run(exp_id: str, params: Dict):
@@ -14,9 +15,9 @@ def run(exp_id: str, params: Dict):
         db_tools.start_db(params['db_path'])
         db_started = True
 
-        # start task queue
-        task_queue = eq.init_task_queue(params['db_host'], params['db_user'],
-                                        port=None, db_name=params['db_name'])
+        # start local task queue
+        task_queue = local_queue.init_task_queue(params['db_host'], params['db_user'],
+                                                 port=None, db_name=params['db_name'])
 
         # check if the input and output queues are empty,
         # if not, then exit with a warning.
@@ -34,13 +35,12 @@ def run(exp_id: str, params: Dict):
         # TODO: submit some tasks to DB, and append the returned eqsql.eq.futures to
         # the list of futures. For example:
 
-        # payload = {'x': random.uniform(0, 10), 'y': random.uniform(0, 10)}
-        # _ , ft = task_queue.submit_task(exp_id, task_type, json.dumps(payload))
-        # fts.append(ft)
+        # payloads = [json.dumps({'x': random.uniform(0, 10), 'y': random.uniform(0, 10)}) for _ in range(100)]
+        # _, fts = task_queue.submit_tasks(exp_id, task_type, payloads)
 
-        # TODO: do something with the completed futures. See esql.eq documentation
+        # TODO: do something with the completed futures. See the EQSQL documentation
         # for more options. For example:
-        # for ft in eq.as_completed(fts):
+        # for ft in task_queue.as_completed(fts):
         #     print(ft.result())
 
     finally:
