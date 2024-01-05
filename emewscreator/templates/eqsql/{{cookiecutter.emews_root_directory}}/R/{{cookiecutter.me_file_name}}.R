@@ -15,31 +15,33 @@ run <- function(exp_id, params) {
         eqsql$db_tools$start_db(params$db_path)
         db_started <- TRUE
 
-        pool_params <- eqsql$worker_pool$cfg_file_to_dict(params$pool_cfg_file)
-        pool <- eqsql$worker_pool$start_local_pool(params$worker_pool_id, params$pool_launch_script,
-                                                   exp_id, pool_params)
-
         task_queue <- init_task_queue(eqsql, params$db_host, params$db_user, params$db_port,
                                       params$db_name)
-        task_type <- params$task_type
 
-        # TODO: submit some tasks to DB, and use the returned list of eqsql.eq.futures 
-        # For example:
+        if (!task_queue$are_queues_empty()) {
+            print("WARNING: task input / output queues are not empty. Aborting run")
+        } else {
+            pool_params <- eqsql$worker_pool$cfg_file_to_dict(params$pool_cfg_file)
+            pool <- eqsql$worker_pool$start_local_pool(params$worker_pool_id, params$pool_launch_script,
+                                                       exp_id, pool_params)
 
-        # m <- matrix(runif(20), nrow=10)
-        # fts <- apply(m, 1, function(x) {
-        #     payload_lst <- list(x = x[1], y = x[2])
-        #     payload <- toJSON(payload_lst, auto_unbox = TRUE)
-        #     submission <- task_queue$submit_task(exp_id, task_type, payload)
-        #     # return the future task
-        #     submission[[2]]
-        # })
+            task_type <- params$task_type
 
-        # TODO: do something with the completed futures. See documentation
-        # for more options. For example:
-        # results <- as_completed(eqsql, fts, function(ft) {
-        #     fromJSON(ft$result()[[2]])
-        # })
+            # TODO: submit some tasks to DB, and use the returned list of eqsql.task_queuecore.Future
+            # For example:
+            # m <- matrix(runif(20), nrow=10)
+            # payloads <- apply(m, 1, function(r) {
+            #     toJSON(list(x = r[1], y = r[2]))
+            # })
+            # result <- task_queue$submit_tasks(exp_id, task_type, payloads)
+            # fts <- result[[2]]
+
+            # TODO: do something with the completed futures. See documentation
+            # for more options. For example:
+            # result <- as_completed(task_queue, fts, function(ft) {
+            #    ft$result()
+            # })
+        }
 
     }, finally = {
         if (!is.null(task_queue)) task_queue$close()
