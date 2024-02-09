@@ -53,5 +53,5 @@ run <- function(exp_id, params) {
 args <- commandArgs(trailingOnly = TRUE)
 exp_id <- args[1]
 params_file <- args[2]
-params <- yaml.load_file(params_file)
+params <- parse_yaml_cfg(params_file)
 run(exp_id, params)

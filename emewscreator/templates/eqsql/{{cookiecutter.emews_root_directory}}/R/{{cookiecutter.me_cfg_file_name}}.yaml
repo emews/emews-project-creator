@@ -9,8 +9,8 @@ db_port:
 worker_pool_id: {{cookiecutter.pool_id}}
 task_type: {{cookiecutter.task_type}}
 
-pool_launch_script: {{cookiecutter.abs_output_path}}/swift/{{cookiecutter.submit_wf_file_name}}.sh
-pool_cfg_file: {{cookiecutter.abs_output_path}}/swift/cfgs/{{cookiecutter.cfg_file_name}}.cfg
+pool_launch_script: ../swift/{{cookiecutter.submit_wf_file_name}}.sh
+pool_cfg_file: ../swift/cfgs/{{cookiecutter.cfg_file_name}}.cfg
 
 # TODO: add the path to a Python binary. This Python install
 # must include the eqsql package.
