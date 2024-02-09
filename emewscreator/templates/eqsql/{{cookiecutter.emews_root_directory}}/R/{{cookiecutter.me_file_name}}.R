@@ -1,7 +1,6 @@
 library(reticulate)
 library(jsonlite)
 library(EQ.SQL)
-library(yaml)
 
 
 run <- function(exp_id, params) {

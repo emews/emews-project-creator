@@ -1,5 +1,4 @@
 import argparse
-import yaml
 from typing import Dict
 
 from eqsql import worker_pool, db_tools, cfg
