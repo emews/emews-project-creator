@@ -41,11 +41,15 @@ Options:
   -h, --help             Show this message and exit.
 
 Commands:
-  eqpy   create an eqpy workflow
-  eqr    create an eqr workflow
-  eqsql    create an eqsql workflow
-  init_db  initialize an eqsql database
-  sweep  create a sweep workflow
+  create_db          create an eqsql database
+  create_db_cluster  create the database cluster for an eqsql database
+  create_db_tables   create the required tables for an eqsql database
+  eqpy               create an eqpy workflow
+  eqr                create an eqr workflow
+  eqsql              create an eqsql workflow
+  init_db            fully initialize an eqsql database, creating the cluster,
+                     the db, and the required tables
+  sweep              create a sweep workflow
 ```
 The `sweep`, `eqpy`, `eqr`, and `eqsql` commands create a particular type of workflow: a sweep, an eqpy-based workflow, an eqr-based workflow, or an eqsql-based workflow. Each of the commands has its own arguments specific to that
 workflow type. Those arguments will be covered in the [Workflow Templates](#workflow_templates) section
@@ -65,8 +69,12 @@ configuration files can be found [here](https://github.com/emews/emews-project-c
 in the `example_cfgs` directory in the EMEWS Creator github repository. See the
 [Workflow Templates](#workflow_templates) section for more information.
 
-The final command `init_db` creates and initializes the postgresql database required for
-running an esql workflow. Its arguments will also be covered in the [Workflow Templates](#workflow_templates) section below. When executing the `init_db` command, no arguments to `emewscreator` are required.
+The `init_db` command creates and fully initializes the postgresql database required for
+running an esql workflow. The `create_db_cluster`, `create_db`, and `create_db_tables` commands individually
+execute the three phases of `init_db` if necessary. For example, an HPC resource may provide
+a database, in which case, only the table creation (`create_db_tables`) is required. More
+details about and the arguments for these commands will be covered in the [Workflow Templates](#workflow_templates) section below. When executing the database releated commands, no arguments to `emewscreator` are required.
+
 ## EMEWS Project Structure ##
 
 Each of the workflow types will create the default EMEWS project structure
@@ -320,30 +328,127 @@ For a more thorough explanation of R-based ME workflows, see the [EMEWS Tutorial
 
 ### INIT DB ###
 
-The `init_db` command creates the EQSQL database in a user specified directory. It assumes that the postgresql
-binaries are availble in the user PATH, and that the eqsql package has been installed. The database name will
-default to `EQ_SQL`, and the database user to `eqsql_user`. Database log messages will be written to
-a `db.log` file in the database directory.
+The `init_db` command creates a fuly initialized EQSQL database in a user specified directory. `init_db` 
+creates a postgresql database cluster in a specified path, then creates a user and database
+in that cluster, and finally populates that datbase with the required eqsql tables. Note that
+these steps can be performed individually if necessary using the `create_db_cluster`, `create_db`,
+and `create_db_tables` commands. `init_db` (and the other database commands) require that
+the postgresql binaries, `initdb`, `pg_ctl`, `'createuser`, and `createdb` are in the user's
+PATH, or that the directory path is specified via the `--pg-bin-path` argument. 
 
 Usage:
 
 ```
-emewscreator init_db -h
-Usage: emewscreator init_db [OPTIONS]
+$ emewscreator init_db [OPTIONS]
 
 Options:
-  -d, --db-path PATH  Database directory path. The database will be created in
-                      this directory.  [required]
-  -p, --port INTEGER  The database port, if any.
-  -h, --help          Show this message and exit.
-```
+  -d, --db-path PATH      Database directory path. The database will be
+                          created in this directory.  [required]
+  -u, --db-user TEXT      The database user name
+  -n, --db-name TEXT      The database name
+  -p, --db-port INTEGER   The database port, if any.
+  -b, --pg-bin-path PATH  The path to postgresql's bin directory (i.e., the
+                          directory that contains the pg_ctl, createuser and
+                          createdb executables)
+  -h, --help              Show this message and exit.
+  ```
 
 `init_db` takes the following arguments:
 
-* `--db-path` - the directory in which to create the database. This must not already exist,
-and will be created by the running template.
-* `--port` - an optional port number for the database to listen for connections on. This is not
-required for a local database.
+* `--db-path` - the directory in which to create the database cluster. This must not already exist,
+and will be created by the command.
+* `--db-user` - the database user's name, defaults to `eqsql_user`
+* `--db-name` - the name of the database to create, defaults to `EQ_SQL`
+* `--db-port` - an optional port number for the database to listen for connections on, if any
+* `--pg-bin-path` - the path to a directory containing postgresql's `initdb`, `pg_ctl`, `createuser`, and `createdb` executables, defaults to an empty string in which case the executables are assumed to be in the user's
+PATH.
+
+### CREATE DB CLUSTER ###
+
+The `create_db_cluster` command creates a postgresql database cluster in a specified directory. `create_db_cluster` requires that the postgresql executable `initdb` is in the user's PATH, or that the directory path is specified via the `--pg-bin-path` argument. 
+
+Usage:
+
+```
+$ emewscreator create_db_cluster [OPTIONS]
+
+Options:
+  -d, --db-path PATH      Database directory path. The cluster will be created
+                          in this directory.  [required]
+  -b, --pg-bin-path PATH  The path to postgresql's bin directory (i.e., the
+                          directory that contains the initdb exectuable)
+  -h, --help              Show this message and exit.
+```
+
+`create_db_cluster` takes the following arguments:
+
+* `--db-path` - the directory in which to create the database cluster. This must not already exist,
+and will be created by the command.
+* `--pg-bin-path` - the path to a directory containing postgresql's `initdb` executable, defaults to an empty string in which case the executable is assumed to be in the user's PATH.
+
+
+### CREATE DB ###
+
+The `create_db` command creates an eqsql database and and eqsql user in a specified postgresql database cluster. `create_db` requires that the postgresql executables, `pg_ctl`, `createuser`, and `createdb` are in the user's PATH, or that the directory path is specified in the `--pg-bin-path` argument. 
+
+Usage:
+
+```
+$ emewscreator create_db [OPTIONS]
+
+Options:
+  -d, --db-path PATH      Database directory path. The database will be
+                          created in this directory.  [required]
+  -u, --db-user TEXT      The database user name
+  -n, --db-name TEXT      The database name
+  -p, --db-port INTEGER   The database port, if any.
+  -b, --pg-bin-path PATH  The path to postgresql's bin directory (i.e., the
+                          directory that contains the pg_ctl, createuser and
+                          createdb executables)
+  -h, --help              Show this message and exit.
+  ```
+
+`create_db` takes the following arguments:
+
+* `--db-path` - the database cluster directory
+* `--db-user` - the database user's name, defaults to `eqsql_user`
+* `--db-name` - the name of the database to create, defaults to `EQ_SQL`
+* `--db-port` - an optional port number for the database to listen for connections on, if any
+* `--pg-bin-path` - the path to a directory containing postgresql's `pg_ctl`, `createuser`, and `createdb` executables, defaults to an empty string in which case the executables are assumed to be in the user's
+PATH.
+
+### CREATE DB TABLES ###
+
+The `create_db_tables` command creates the required database tables in the specified database. 
+`create_db_tables` requires that the postgresql's `pg_ctl` executable is in the user's PATH, or
+that the directory path is specified in the `--pg-bin-path` argument. 
+
+Usage:
+
+```
+emewscreator create_db_tables [OPTIONS]
+
+Options:
+  -d, --db-path PATH      Database directory path. The tables will be created
+                          in the database in this directory.  [required]
+  -u, --db-user TEXT      The database user name
+  -n, --db-name TEXT      The database name
+  -p, --db-port INTEGER   The database port, if any.
+  -b, --pg-bin-path PATH  The path to postgresql's bin directory (i.e., the
+                          directory that contains the pg_ctl, createuser and
+                          createdb executables)
+  -h, --help              Show this message and exit.
+  ```
+
+`create_db_tables` takes the following arguments:
+
+* `--db-path` - the database cluster directory
+* `--db-user` - the database user's name, defaults to `eqsql_user`
+* `--db-name` - the name of the database in which to create the tabes, defaults to `EQ_SQL`
+* `--db-port` - an optional port number for the database to listen for connections on, if any
+* `--pg-bin-path` - the path to a directory containing postgresql's `pg_ctl` executable, defaults to an empty string in which case the executable is assumed to be in the user's PATH.
+
+
 
 ### EQSQL ###
 
@@ -355,7 +460,7 @@ The tasks can be provided by a Python or R language model exploration (ME) algor
 Usage:
 
 ```
-$emewscreator eqsql -h
+$ emewscreator eqsql -h
 Usage: emewscreator eqsql [OPTIONS]
 
 Options:

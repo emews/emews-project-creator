@@ -219,7 +219,7 @@ def eqr(obj: TemplateInfo, **kwargs):
     generate.generate_eqr(obj.out_dir, base_config, not obj.overwrite)
 
 
-@cli.command('init_db', short_help='initialize an eqsql database')
+@cli.command('init_db', short_help='fully initialize an eqsql database, creating the cluster, the db, and the required tables')
 @click.option(
     '-d',
     '--db-path',
@@ -228,27 +228,184 @@ def eqr(obj: TemplateInfo, **kwargs):
     help='Database directory path. The database will be created in this directory.'
 )
 @click.option(
+    '-u',
+    '--db-user',
+    default='eqsql_user',
+    help='The database user name'
+)
+@click.option(
+    '-n',
+    '--db-name',
+    default='EQ_SQL',
+    help='The database name'
+)
+@click.option(
     '-p',
-    '--port',
+    '--db-port',
     required=False,
     type=click.INT,
     help="The database port, if any."
+)
+@click.option(
+    '-b',
+    '--pg-bin-path',
+    default='',
+    type=click.Path(),
+    help="The path to postgresql's bin directory (i.e., the directory that contains the pg_ctl, createuser and createdb executables)"
 )
 @click.pass_obj
 def init_db(obj: TemplateInfo, **kwargs):
     colorama.init(autoreset=True)
     from eqsql import db_tools
-    print(colorama.Fore.GREEN + 'Initializing Database')
     db_path = kwargs['db_path']
-    result = db_tools.init_eqsql_db(db_path, db_port=kwargs['port'])
+    db_user = kwargs['db_user']
+    db_name = kwargs['db_name']
+    db_port = kwargs['db_port']
+    pg_bin_path = kwargs['pg_bin_path']
+    print(colorama.Fore.GREEN + 'Initializing database')
+    result = db_tools.init_eqsql_db(db_path, db_user=db_user, db_name=db_name, db_port=db_port,
+                                    pg_bin_path=pg_bin_path)
     if result is None:
-        print(colorama.Fore.RED + 'Database Initialization Failed')
+        print(colorama.Fore.RED + 'Database initialization failed')
     else:
         print(colorama.Fore.GREEN + 'Database Initialization Succeeded')
         print(colorama.Fore.GREEN + f'DB_PATH: {result[0]}\nDB_USER: {result[1]}\nDB_NAME: {result[2]}')
         print(colorama.Fore.GREEN + f'DB_HOST: {result[3]}')
-        if kwargs['port'] is not None:
+        if db_port is not None:
             print(colorama.Fore.GREEN + f'DB_PORT: {result[4]}')
+
+
+@cli.command('create_db_cluster', short_help='create the database cluster for an eqsql database')
+@click.option(
+    '-d',
+    '--db-path',
+    required=True,
+    type=click.Path(),
+    help='Database directory path. The cluster will be created in this directory.'
+)
+@click.option(
+    '-b',
+    '--pg-bin-path',
+    default='',
+    type=click.Path(),
+    help="The path to postgresql's bin directory (i.e., the directory that contains postgresql's initdb executable)"
+)
+@click.pass_obj
+def create_cluster(obj: TemplateInfo, **kwargs):
+    colorama.init(autoreset=True)
+    from eqsql import db_tools
+    db_path = kwargs['db_path']
+    pg_bin_path = kwargs['pg_bin_path']
+    print(colorama.Fore.GREEN + 'Creating database cluster')
+    try:
+        db_tools.create_eqsql_cluster(db_path, pg_bin_path)
+        print(colorama.Fore.GREEN + 'Database cluster creation succeeded')
+    except ValueError as ex:
+        print(colorama.Fore.RED + f'Database cluster creation failed:\n{ex}')
+
+
+@cli.command('create_db', short_help='create an eqsql database')
+@click.option(
+    '-d',
+    '--db-path',
+    required=True,
+    type=click.Path(),
+    help='Database directory path. The database will be created in this directory.'
+)
+@click.option(
+    '-u',
+    '--db-user',
+    default='eqsql_user',
+    help='The database user name'
+)
+@click.option(
+    '-n',
+    '--db-name',
+    default='EQ_SQL',
+    help='The database name'
+)
+@click.option(
+    '-p',
+    '--db-port',
+    required=False,
+    type=click.INT,
+    help="The database port, if any."
+)
+@click.option(
+    '-b',
+    '--pg-bin-path',
+    default='',
+    type=click.Path(),
+    help="The path to postgresql's bin directory (i.e., the directory that contains the pg_ctl, createuser and createdb executables)"
+)
+@click.pass_obj
+def create_db(obj: TemplateInfo, **kwargs):
+    colorama.init(autoreset=True)
+    from eqsql import db_tools
+    db_path = kwargs['db_path']
+    db_user = kwargs['db_user']
+    db_name = kwargs['db_name']
+    db_port = kwargs['db_port']
+    pg_bin_path = kwargs['pg_bin_path']
+    print(colorama.Fore.GREEN + 'Creating database')
+
+    try:
+        db_tools.create_eqsql_db(db_path, db_user, db_name, db_port, pg_bin_path)
+        print(colorama.Fore.GREEN + 'Database creation succeeded')
+    except ValueError as ex:
+        print(colorama.Fore.RED + f'Database creation failed:\n{ex}')
+
+
+@cli.command('create_db_tables', short_help='create the required tables for an eqsql database')
+@click.option(
+    '-d',
+    '--db-path',
+    required=True,
+    type=click.Path(),
+    help='Database directory path. The tables will be created in the database in this directory.'
+)
+@click.option(
+    '-u',
+    '--db-user',
+    default='eqsql_user',
+    help='The database user name'
+)
+@click.option(
+    '-n',
+    '--db-name',
+    default='EQ_SQL',
+    help='The database name'
+)
+@click.option(
+    '-p',
+    '--db-port',
+    required=False,
+    type=click.INT,
+    help="The database port, if any."
+)
+@click.option(
+    '-b',
+    '--pg-bin-path',
+    default='',
+    type=click.Path(),
+    help="The path to postgresql's bin directory (i.e., the directory that contains the pg_ctl, createuser and createdb executables)"
+)
+@click.pass_obj
+def create_tables(obj: TemplateInfo, **kwargs):
+    colorama.init(autoreset=True)
+    from eqsql import db_tools
+    db_path = kwargs['db_path']
+    db_user = kwargs['db_user']
+    db_name = kwargs['db_name']
+    db_port = kwargs['db_port']
+    pg_bin_path = kwargs['pg_bin_path']
+    print(colorama.Fore.GREEN + 'Creating database')
+
+    try:
+        db_tools.create_eqsql_tables(db_path, db_user, db_name, db_port, None, pg_bin_path)
+        print(colorama.Fore.GREEN + 'Table creation succeeded')
+    except ValueError as ex:
+        print(colorama.Fore.RED + f'Table creation failed:\n{ex}')
 
 
 # EQSQL
