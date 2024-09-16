@@ -265,7 +265,7 @@ R model exploration (ME) algorithm. The workflow will start the R ME
 which then iteratively provides json format input parameters for model
 execution.
 
-*Note*: The EQR extension requires an additional compilation step. Once the template has been run,
+*Note*: The EQR extension typically requires an additional compilation step.Once the template has been run,
 see `{eqr_dir}/src/README.md` for compilation instructions.
 
 Usage:
@@ -312,15 +312,17 @@ This is the name of that file.
 
 In addition to the default set of files described in the
 [EMEWS Project Structure](#emews-project-structure) section, the eqr workflow template will also
-install the source for the EQ/R EMEWS Swift-t extension. By default, the extension will be installed 
-in `ext/EQ-R`. An alternative location can be specified with the `--eqr-dir` configuration argument.
+install the source for the EQ/R EMEWS Swift-t extension. By default, the extension will typically be installed 
+in `ext/EQ-R`. If EMEWS Creator has been installed as part of a binary install using
+the EMEWS installer, the default location will reflect that.
+An alternative location can be specified with the `--eqr-dir` configuration argument.
 
-* `--eqr-dir` - specifies the location of the eqr extension (defaults to `ext/EQ-R`)
+* `--eqr-dir` - specifies the location of the eqr extension (defaults to `ext/EQ-R`).
 
 You can set this to use an existing EQ-R extension, or if the specified location
 doesn't exist, the extension will be installed there. 
 
-The extension needs to be compiled before it can be used. See `{eqr_dir}/src/README.md` for compilation instructions.
+The extension typically needs to be compiled before it can be used. See `{eqr_dir}/src/README.md` for compilation instructions. If EMEWS Creator has been installed as part of a binary install using the EMEWS installer, compilation is not necessary.
 
 A sample EQR configuration file can be found [here](https://github.com/emews/emews-project-creator/blob/master/example_cfgs/eqr.yaml).
 
