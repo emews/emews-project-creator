@@ -202,7 +202,13 @@ def config_for_eqr(config: Dict):
     # jinja on them
     config['_copy_without_render'].append('ext/EQ-R/src/*')
 
-    if 'eqr_dir' not in config:
+    # check if conda install that includes, eqr
+    if "CONDA_PREFIX" in os.environ:
+        conda_lib = os.path.join(os.getenv("CONDA_PREFIX"), "lib")
+        if os.path.exists(os.path.join(conda_lib, "EQR.swift")):
+            config['eqr_dir'] = conda_lib
+
+    elif 'eqr_dir' not in config:
         config['eqr_dir'] = DEFAULT_EQR_EXT
 
 
