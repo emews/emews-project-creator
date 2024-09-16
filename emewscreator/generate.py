@@ -206,7 +206,7 @@ def config_for_eqr(config: Dict):
     if "CONDA_PREFIX" in os.environ:
         conda_lib = os.path.join(os.getenv("CONDA_PREFIX"), "lib")
         if os.path.exists(os.path.join(conda_lib, "EQR.swift")):
-            config['eqr_dir'] = conda_lib
+            config['eqr_dir'] = "$CONDA_PREFIX/lib"
 
     elif 'eqr_dir' not in config:
         config['eqr_dir'] = DEFAULT_EQR_EXT
@@ -315,7 +315,7 @@ def generate_eqr(emews_root, base_config, keep_existing):
     if eqr_location == DEFAULT_EQR_EXT:
         eqr_location = os.path.join(eqr_wd, template_emews_root, 'ext/EQ-R/src')
         copy_eqr_code(eqr_location)
-    elif not os.path.exists(eqr_location):
+    elif not os.path.exists(eqr_location) and not eqr_location.startswith("$"):
         eqr_location = os.path.join(eqr_location, 'src')
         os.makedirs(eqr_location)
         copy_eqr_code(eqr_location)
