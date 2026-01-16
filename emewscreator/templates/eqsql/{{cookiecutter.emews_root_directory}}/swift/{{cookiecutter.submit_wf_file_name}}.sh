@@ -6,8 +6,8 @@
 {% include 'common/submission_r_paths.j2' %}
 
 # EQSQL swift extension location
-EQSQL={{cookiecutter.eqsql_dir}}
-EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
+EQSQL="{{cookiecutter.eqsql_dir}}"
+EMEWS_EXT="$EMEWS_PROJECT_ROOT/ext/emews"
 
 # TODO: if Python cannot be found then uncomment
 # and edit this line.
@@ -17,7 +17,7 @@ EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
 # X package" type Python errors then append
 # the missing package's path to the PYTHONPATH
 # variable below, separating the entries with ":"
-export PYTHONPATH=$EMEWS_PROJECT_ROOT/python:$EQSQL
+export PYTHONPATH="$EMEWS_PROJECT_ROOT/python:$EQSQL"
 
 # Resident task workers and ranks
 export TURBINE_RESIDENT_WORK_WORKERS=1

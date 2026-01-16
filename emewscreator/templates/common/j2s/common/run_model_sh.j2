@@ -27,16 +27,16 @@ fi
 
 # Set PARAM_LINE from the first argument to this script
 # PARAM_LINE is the string containing the model parameters for a run.
-PARAM_LINE=$1
+PARAM_LINE="$1"
 
 # Set EMEWS_ROOT to the root directory of the project (i.e. the directory
 # that contains the scripts, swift, etc. directories and files)
-EMEWS_ROOT=$2
+EMEWS_ROOT="$2"
 
 # Each model run, runs in its own "instance" directory
 # Set INSTANCE_DIRECTORY to that and cd into it.
-INSTANCE_DIRECTORY=$3
-cd $INSTANCE_DIRECTORY
+INSTANCE_DIRECTORY="$3"
+cd "$INSTANCE_DIRECTORY"
 
 # TODO: Define the command to run the model. For example,
 # MODEL_CMD="python"

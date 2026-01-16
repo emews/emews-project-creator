@@ -10,12 +10,12 @@ echo "--------------------------"
 
 {% include 'common/machine.j2' %}
 
-EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
+EMEWS_EXT="$EMEWS_PROJECT_ROOT/ext/emews"
 
 # Copies UPF file to experiment directory
-U_UPF_FILE=$EMEWS_PROJECT_ROOT/$CFG_UPF
-UPF_FILE=$TURBINE_OUTPUT/upf.txt
-cp $U_UPF_FILE $UPF_FILE
+U_UPF_FILE="$EMEWS_PROJECT_ROOT/$CFG_UPF"
+UPF_FILE="$TURBINE_OUTPUT/upf.txt"
+cp "$U_UPF_FILE" "$UPF_FILE"
 
 CMD_LINE_ARGS="$* -f=$UPF_FILE "
 

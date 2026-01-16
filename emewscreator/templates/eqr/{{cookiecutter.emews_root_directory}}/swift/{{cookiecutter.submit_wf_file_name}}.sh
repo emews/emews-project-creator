@@ -19,12 +19,12 @@ export RESIDENT_WORK_RANKS=$(( PROCS - 2 ))
 
 {% include 'common/machine.j2' %}
 
-EMEWS_EXT=$EMEWS_PROJECT_ROOT/ext/emews
+EMEWS_EXT="$EMEWS_PROJECT_ROOT/ext/emews"
 
 # Copies ME config file to experiment directory
-FNAME=$(basename $ME_CONFIG)
-ME_CONFIG_CP=$TURBINE_OUTPUT/$FNAME
-cp $ME_CONFIG $ME_CONFIG_CP
+FNAME=$(basename "$ME_CONFIG")
+ME_CONFIG_CP="$TURBINE_OUTPUT/$FNAME"
+cp "$ME_CONFIG" "$ME_CONFIG_CP"
 
 CMD_LINE_ARGS="$* --me_config_file=$ME_CONFIG_CP --trials=$CFG_TRIALS"
 
