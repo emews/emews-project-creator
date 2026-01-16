@@ -23,7 +23,7 @@ pip install emewscreator
 
 The following provides an overview of how to use EMEWS Creator to create
 workflow projects. For a more comprehensive explanation see the
-[EMEWS Tutorial](https://www.mcs.anl.gov/~emews/tutorial/).
+[EMEWS Tutorial](https://emews.org/emews-tutorial/).
 
 EMEWS Creator is run from the command line.
 
