@@ -43,3 +43,4 @@ scratch/
 *.egg-info/
 .tox/
 
+.claude

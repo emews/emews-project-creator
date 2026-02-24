@@ -127,7 +127,7 @@ def sweep(obj: TemplateInfo, config, workflow_name):
     '-c',
     '--config',
     type=click.Path(),
-    cls=NotRequiredIf, not_required_if=['workflow_name', 'module_name', 'me_cfg_file',
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'module_name', 'me_cfg_file_name',
                                         'model_output_file_name'],
     callback=validate_config,
     help='Path to the template configuration file',
@@ -143,9 +143,8 @@ def sweep(obj: TemplateInfo, config, workflow_name):
     help='Python model exploration algorithm module name'
 )
 @click.option(
-    '--me-cfg-file',
-    type=click.Path(),
-    help='Configuration file for the model exploration algorithm'
+    '--me-cfg-file-name',
+    help='The name of the model exploration algorithm configuration file.'
 )
 @click.option(
     '--trials',
@@ -176,7 +175,7 @@ def eqpy(obj: TemplateInfo, **kwargs):
     '-c',
     '--config',
     type=click.Path(),
-    cls=NotRequiredIf, not_required_if=['workflow_name', 'script_file', 'me_cfg_file',
+    cls=NotRequiredIf, not_required_if=['workflow_name', 'script_file', 'me_cfg_file_name',
                                         'model_output_file_name'],
     callback=validate_config,
     help='Path to the template configuration file',
@@ -192,9 +191,8 @@ def eqpy(obj: TemplateInfo, **kwargs):
     help='Path to the R model exploration algorithm'
 )
 @click.option(
-    '--me-cfg-file',
-    type=click.Path(),
-    help='Configuration file for the model exploration algorithm'
+    '--me-cfg-file-name',
+    help='The name of the model exploration algorithm configuration file.'
 )
 @click.option(
     '--trials',

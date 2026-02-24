@@ -207,8 +207,8 @@ Options:
   --module-name TEXT             Python model exploration algorithm module
                                  name
 
-  --me-cfg-file PATH             Configuration file for the model exploration
-                                 algorithm
+  --me-cfg-file-name TEXT        The name of the model exploration algorithm
+                                 configuration file.
 
   --trials INTEGER               Number of trials / replicates to perform for
                                  each model run. Defaults to 1
@@ -228,9 +228,8 @@ In addition to the common configuration arguments described [above](#workflow_te
 the eqpy template also has the following:
 
 * `--module-name` - the Python module implementing the ME algorithm
-* `--me-cfg-file` - the path to a configuration file for the Python ME algorithm. This
-path will be passed to the Python ME when it is initialized. This is relative to the
-directory specified in `--output-dir`.
+* `--me-cfg-file-name` - the name of the model exploration algorithm configuration file.
+A template YAML configuration file with this name will be created in the `python/` directory.
 * `--trials` - the number of trials or replicates to perform for each model run. Defaults to 1.
 * `model-output-file-name` - each model run is passed a file path for writing its output.
 This is the name of that file.
@@ -281,8 +280,8 @@ Options:
 
   -n, --workflow-name TEXT       Name of the workflow
   --script-file TEXT             Path to the R model exploration algorithm
-  --me-cfg-file PATH             Configuration file for the model exploration
-                                 algorithm
+  --me-cfg-file-name TEXT        The name of the model exploration algorithm
+                                 configuration file.
 
   --trials INTEGER               Number of trials / replicates to perform for
                                  each model run
@@ -303,9 +302,8 @@ In addition to the common configuration parameters described [above](#workflow_t
 the `eqr` template also has the following:
 
 * `--script-file` - the path to the R script implementing the ME algorithm
-* `--me-cfg-file` - the path to a configuration file for the R ME algorithm. This
-path will be passed to the R ME when it is initialized. This path is relative
-to the directory specified by `--output-dir`.
+* `--me-cfg-file-name` - the name of the model exploration algorithm configuration file.
+A template YAML configuration file with this name will be created in the `R/` directory.
 * `--trials` - the number of trials or replicates to perform for each model run
 * `--model_output_file_name` - each model run is passed a file path for writing its output.
 This is the name of that file.

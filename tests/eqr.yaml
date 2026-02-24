@@ -1,7 +1,7 @@
 workflow_name: eqr workflow
 model_name: My Model
 
-me_cfg_file : data/me_config.R
+me_cfg_file_name : me_cfg
 trials: 2
 script_file : R/me.R
 

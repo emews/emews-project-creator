@@ -1,7 +1,7 @@
 workflow_name: eqpy workflow
 model_name: My Model
 
-me_cfg_file : data/me_config.json
+me_cfg_file_name : me_cfg
 module_name : ga
 trials: 2
 

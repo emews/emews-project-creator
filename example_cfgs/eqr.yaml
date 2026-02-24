@@ -3,8 +3,8 @@ model_name: My Model
 # --workflow-name, eqr argument
 workflow_name: eqr workflow
 
-# --me-cfg-file, eqr argument
-me_cfg_file : data/me_config.R
+# --me-cfg-file-name, eqr argument
+me_cfg_file_name : me_cfg
 # --script-file, eqr argument
 script_file : R/me.R
 # --trials, eqr argument
