@@ -6,7 +6,7 @@ app (file out, file err) run_model(file shfile, string param_line, string output
 (float result) run_obj(string param_line, int trial, string instance_dir, string instance_id) {
     file out <instance_dir + "/" + instance_id+"_out.txt">;
     file err <instance_dir + "/" + instance_id+"_err.txt">;
-    string output_file = "%s/{{cookiecutter.model_output_file_name}}_%s.{{cookiecutter.model_output_file_ext}}" % (instance_dir, instance_id);
+    string output_file = "%s/{{cookiecutter.model_output_file_name}}_%s{{cookiecutter.model_output_file_ext}}" % (instance_dir, instance_id);
     (out,err) = run_model(model_sh, param_line, output_file,  trial, instance_dir) =>
     result = get_result(output_file);
 }
